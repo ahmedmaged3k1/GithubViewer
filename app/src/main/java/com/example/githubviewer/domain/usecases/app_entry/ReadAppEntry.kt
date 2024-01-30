@@ -1,4 +1,4 @@
-package com.example.githubviewer.domain.usecases
+package com.example.githubviewer.domain.usecases.app_entry
 
 import com.example.githubviewer.domain.manager.LocalUserManager
 import kotlinx.coroutines.flow.Flow
