@@ -2,10 +2,14 @@ package com.example.githubviewer.presentation.nvgraph
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.githubviewer.presentation.home.HomeScreen
+import com.example.githubviewer.presentation.home.HomeViewModel
 
 @Composable
 fun NavGraph(
@@ -37,7 +41,9 @@ fun NavGraph(
             startDestination = Route.ReposNavigationScreen.route
         ){
             composable(route=Route.ReposNavigationScreen.route){
-                Text(text = "Issues  Screen")
+                val viewModel : HomeViewModel = hiltViewModel()
+                val repos = viewModel.repos.collectAsLazyPagingItems()
+                HomeScreen(repos = repos, navigate ={} )
             }
         }
         navigation(

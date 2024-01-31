@@ -11,6 +11,6 @@ object Dimens {
     val reposCardSize= 96.dp
     val extraSmallPadding =3.dp
     val extraSmallPadding2 =6.dp
-
+    val iconSize = 20.dp
 
 }
