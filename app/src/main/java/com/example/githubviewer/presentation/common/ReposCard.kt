@@ -1,6 +1,7 @@
 package com.example.githubviewer.presentation.common
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.githubviewer.R
 import com.example.githubviewer.data.remote.dto.License
+import com.example.githubviewer.data.remote.dto.Owner
 import com.example.githubviewer.data.remote.dto.OwnerX
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.ui.theme.GithubViewerTheme
@@ -121,7 +123,7 @@ fun repoCardPreview() {
         name = "grit",
         full_name = "mojombo/grit",
         private = false,
-        owner = OwnerX(
+        owner = Owner(
             login = "mojombo",
             id = 1,
             node_id = "MDQ6VXNlcjE=",
@@ -224,10 +226,10 @@ fun repoCardPreview() {
         network_count = 540,
         subscribers_count = 72
     )
-
-    GithubViewerTheme {
+    Log.d("TAG", "repoCardPreview: ")
+    /*GithubViewerTheme {
         repoCard(repo = fakeGitHubRepo) {
 
         }
-    }
+    }*/
 }

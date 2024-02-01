@@ -58,7 +58,7 @@ data class RepoDetailsResponse(
     val notifications_url: String,
     val open_issues: Int,
     val open_issues_count: Int,
-    val owner: OwnerX,
+    val owner: Owner,
     val private: Boolean,
     val pulls_url: String,
     val pushed_at: String,

@@ -9,6 +9,7 @@ import com.example.githubviewer.domain.repository.ReposRepository
 import com.example.githubviewer.domain.usecases.app_entry.AppEntryUseCases
 import com.example.githubviewer.domain.usecases.app_entry.ReadAppEntry
 import com.example.githubviewer.domain.usecases.app_entry.SaveAppEntry
+import com.example.githubviewer.domain.usecases.repos.GetRepoDetails
 import com.example.githubviewer.domain.usecases.repos.GetRepos
 import com.example.githubviewer.domain.usecases.repos.ReposUseCases
 import com.example.githubviewer.util.Constants.BASE_URL
@@ -53,8 +54,10 @@ object AppModule {
     @Singleton
     fun provideReposUseCases(reposRepository: ReposRepository):ReposUseCases{
         return ReposUseCases(
-            getRepos = GetRepos(reposRepository)
+            getRepos = GetRepos(reposRepository),
+            getReposDetails = GetRepoDetails(reposRepository)
         )
     }
+
 
 }

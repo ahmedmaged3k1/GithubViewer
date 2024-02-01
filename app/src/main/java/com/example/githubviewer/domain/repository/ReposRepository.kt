@@ -6,5 +6,8 @@ import com.example.githubviewer.data.remote.dto.ReposResponse
 import kotlinx.coroutines.flow.Flow
 
 interface ReposRepository {
+
     fun getRepos(): Flow<PagingData<RepoDetailsResponse>>
+    suspend fun getRepoDetails(owner: String, repo: String): RepoDetailsResponse
+    fun getAllDetailedRepos(): Flow<List<RepoDetailsResponse>>
 }

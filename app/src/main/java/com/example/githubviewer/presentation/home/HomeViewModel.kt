@@ -10,6 +10,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val reposUseCases: ReposUseCases):ViewModel() {
-    val repos = reposUseCases.getRepos().cachedIn(viewModelScope)
+    val repos = reposUseCases.getRepos()
+
+
 
 }

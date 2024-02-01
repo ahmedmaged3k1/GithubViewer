@@ -1,6 +1,7 @@
 package com.example.githubviewer
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import com.example.githubviewer.presentation.nvgraph.NavGraph
 import com.example.githubviewer.ui.theme.GithubViewerTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +32,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             GithubViewerTheme {
+                Log.d("TAG", "onCreate: hello")
                 val isSystemInDarkMode = isSystemInDarkTheme()
                 val systemController = rememberSystemUiController()
                 SideEffect {
@@ -39,8 +42,12 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
+                    Log.d("TAG", "onCreate : Navigation ${viewModel.startDestination} ")
+
+                    NavGraph(startDestination = "reposNavigation")
 
                 }
+
             }
         }
     }

@@ -43,7 +43,7 @@ fun EmptyScreen(error: LoadState.Error? = null) {
     }
 
     if (error == null){
-        message = "You have not saved news so far !"
+        message = "Repo Not Found"
         icon = R.drawable.ic_search_document
     }
 

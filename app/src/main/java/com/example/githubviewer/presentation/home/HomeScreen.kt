@@ -56,7 +56,7 @@ import com.example.githubviewer.util.Dimens
             .statusBarsPadding()
         ){
             Image(
-                painter = painterResource(id = R.drawable.ic_logo),
+                painter = painterResource(id = R.drawable.github_icon),
                 contentDescription = null,
                 modifier = Modifier
                     .width(150.dp)
