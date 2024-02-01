@@ -8,10 +8,10 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.example.githubviewer.presentation.nvgraph.NavGraph
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                         darkIcons = !isSystemInDarkMode
                     )
                 }
-                Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
+                Box(modifier = Modifier.background(color = colorResource(id = R.color.input_background))) {
                     Log.d("TAG", "onCreate : Navigation ${viewModel.startDestination} ")
 
                     NavGraph(startDestination = "reposNavigation")
