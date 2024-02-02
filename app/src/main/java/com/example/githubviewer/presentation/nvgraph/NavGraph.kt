@@ -1,6 +1,7 @@
 package com.example.githubviewer.presentation.nvgraph
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import com.example.githubviewer.presentation.details.DetailsViewModel
 import com.example.githubviewer.presentation.home.HomeScreen
 import com.example.githubviewer.presentation.home.HomeViewModel
 import com.example.githubviewer.presentation.issues.IssueDetails
+import com.example.githubviewer.presentation.issues.IssuesViewModel
 import kotlinx.coroutines.runBlocking
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -43,22 +45,28 @@ fun NavGraph(
                 val viewModel: DetailsViewModel = hiltViewModel()
                 runBlocking {
                     viewModel.getRepoDetails(owner,repoName)
-                    viewModel.getRepoIssues(owner,repoName)
+
                 }
                 // Pass these values to your DetailsScreen composable
                 viewModel.loadedRepoDetails?.let {
                     DetailsScreen(
                         navController = navController,
                         repoDetailsResponse = it,
-                        )
+
+                    )
                 }
             }
 
-            composable(route = Route.IssuesScreen.route) {
-                // Specify the content for IssuesScreen
-                val viewModel: DetailsViewModel = hiltViewModel()
+            composable(route = Route.IssuesScreen.route + "/{owner}/{repoName}") { backStackEntry ->
+                val owner = backStackEntry.arguments?.getString("owner")
+                val repoName = backStackEntry.arguments?.getString("repoName")
+                val viewModel: IssuesViewModel = hiltViewModel()
+                runBlocking {
+                    viewModel.getRepoIssues(owner, repoName)
 
-                viewModel.loadedRepoIssues?.let { it1 -> IssueDetails(it1,navController) }
+                }
+                // Call your IssuesScreen composable with the extracted parameters
+                viewModel.loadedRepoIssues?.let { IssueDetails(issue = it,navController) }
             }
 
 

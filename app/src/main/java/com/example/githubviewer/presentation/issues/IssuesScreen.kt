@@ -60,7 +60,9 @@ fun IssueDetails(
         DetailsTopBar(
             navController = navController,
             onShareClick = { /*TODO*/ },
-            onBackClick = { navController.popBackStack() }
+            onBackClick = {
+                navController.popBackStack()
+            }
         )
         Column(
             modifier = Modifier

@@ -164,13 +164,11 @@ fun DetailsScreen(
                 )
 
                 // Button to navigate to the issues screen
+                // Inside DetailsScreen composable
                 Button(
                     onClick = {
-                        navController.navigate(Route.IssuesScreen.route)
-
-
-                    }
-                    ,
+                        navController.navigate("${Route.IssuesScreen.route}/${repoDetailsResponse.owner.login}/${repoDetailsResponse.name}")
+                    },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text("View Issues")

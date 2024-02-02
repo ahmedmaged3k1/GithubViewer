@@ -28,7 +28,8 @@ import com.example.githubviewer.util.Dimens
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(repos: LazyPagingItems<RepoDetailsResponse>,
-               navigate:  (owner: String, repoName: String) -> Unit) {
+               navigate:  (owner: String, repoName: String) -> Unit
+) {
 
     val titles by remember {
         derivedStateOf {

@@ -1,5 +1,6 @@
 package com.example.githubviewer.presentation.details
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.data.remote.dto.RepoIssuesResponse
@@ -11,7 +12,8 @@ import javax.inject.Inject
 class DetailsViewModel @Inject constructor(private val reposUseCases: ReposUseCases): ViewModel() {
 
      var loadedRepoDetails: RepoDetailsResponse? = null
-    var loadedRepoIssues: RepoIssuesResponse? = null
+    var owner : String? =null
+    var repoName : String? =null
 
     suspend fun getRepoDetails(owner : String?, repo : String?): RepoDetailsResponse? {
 
@@ -23,16 +25,7 @@ class DetailsViewModel @Inject constructor(private val reposUseCases: ReposUseCa
 
     }
 
-    suspend fun getRepoIssues(owner : String?, repo : String?): RepoIssuesResponse? {
 
-        if (repo != null&&owner!=null) {
-            loadedRepoIssues = reposUseCases.getReposIssues(owner, repo)[0]
-
-        }
-
-        return loadedRepoIssues
-
-    }
 
 
 
