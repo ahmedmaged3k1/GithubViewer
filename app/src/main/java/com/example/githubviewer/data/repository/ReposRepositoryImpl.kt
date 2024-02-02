@@ -8,6 +8,7 @@ import com.example.githubviewer.data.local.RepoDao
 import com.example.githubviewer.data.remote.ReposApi
 import com.example.githubviewer.data.remote.ReposPagingSource
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
+import com.example.githubviewer.data.remote.dto.RepoIssuesResponse
 import com.example.githubviewer.domain.repository.ReposRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,8 +38,14 @@ class ReposRepositoryImpl(private val reposApi: ReposApi,
 
         // Update the list of detailed repos
         _allDetailedRepos.value = _allDetailedRepos.value + listOf(repoDetails)
-        Log.d("TAG", "getRepoDetails: ${repoDetails.toString()} ")
         return repoDetails
+    }
+
+    override suspend fun getRepoIssues(owner: String, repo: String): List<RepoIssuesResponse> {
+        val repoIssues = reposApi.getRepoIssues(owner, repo)
+
+        Log.d("TAG", "getRepoIssues: ${repoIssues.toString()} ")
+        return repoIssues
     }
 
     companion object {

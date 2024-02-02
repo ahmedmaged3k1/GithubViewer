@@ -1,4 +1,4 @@
-package com.example.githubviewer.presentation.details
+package com.example.githubviewer.presentation.issues
 
 import androidx.lifecycle.ViewModel
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
@@ -8,32 +8,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailsViewModel @Inject constructor(private val reposUseCases: ReposUseCases): ViewModel() {
 
-     var loadedRepoDetails: RepoDetailsResponse? = null
+class IssuesViewModel @Inject constructor(private val reposUseCases: ReposUseCases): ViewModel(){
     var loadedRepoIssues: RepoIssuesResponse? = null
-
-    suspend fun getRepoDetails(owner : String?, repo : String?): RepoDetailsResponse? {
-
-            if (repo != null&&owner!=null) {
-                loadedRepoDetails = reposUseCases.getReposDetails(owner, repo)
-            }
-
-        return loadedRepoDetails
-
-    }
 
     suspend fun getRepoIssues(owner : String?, repo : String?): RepoIssuesResponse? {
 
         if (repo != null&&owner!=null) {
             loadedRepoIssues = reposUseCases.getReposIssues(owner, repo)[0]
-
         }
 
         return loadedRepoIssues
 
     }
-
-
 
 }

@@ -1,10 +1,12 @@
 package com.example.githubviewer
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -14,7 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.rememberNavController
 import com.example.githubviewer.presentation.nvgraph.NavGraph
+import com.example.githubviewer.presentation.nvgraph.Route
 import com.example.githubviewer.ui.theme.GithubViewerTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val viewModel by viewModels<MainViewModel>()
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
@@ -44,7 +49,8 @@ class MainActivity : ComponentActivity() {
                 Box(modifier = Modifier.background(color = colorResource(id = R.color.input_background))) {
                     Log.d("TAG", "onCreate : Navigation ${viewModel.startDestination} ")
 
-                    NavGraph(startDestination = "reposNavigation")
+
+                    NavGraph(startDestination = Route.ReposNavigation.route)
 
                 }
 

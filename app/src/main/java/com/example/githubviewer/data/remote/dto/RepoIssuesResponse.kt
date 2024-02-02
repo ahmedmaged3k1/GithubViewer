@@ -1,0 +1,32 @@
+package com.example.githubviewer.data.remote.dto
+
+data class RepoIssuesResponse(
+    val url: String,
+    val repository_url: String,
+    val labels_url: String,
+    val comments_url: String,
+    val events_url: String,
+    val html_url: String,
+    val id: Long,
+    val node_id: String,
+    val number: Int,
+    val title: String,
+    val user: User,
+    val labels: List<Any>,
+    val state: String,
+    val locked: Boolean,
+    val assignee: Any?,
+    val assignees: List<Any>,
+    val milestone: Any?,
+    val comments: Int,
+    val created_at: String,
+    val updated_at: String,
+    val closed_at: String?,
+    val author_association: String,
+    val active_lock_reason: Any?,
+    val body: String,
+    val reactions: Reactions,
+    val timeline_url: String,
+    val performed_via_github_app: Any?,
+    val state_reason: Any?
+)

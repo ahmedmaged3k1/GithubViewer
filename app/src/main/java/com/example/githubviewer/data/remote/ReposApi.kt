@@ -1,6 +1,7 @@
 package com.example.githubviewer.data.remote
 
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
+import com.example.githubviewer.data.remote.dto.RepoIssuesResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -14,4 +15,9 @@ interface ReposApi {
         @Path("owner") owner: String,
         @Path("repo") repo: String
     ): RepoDetailsResponse
+    @GET("repos/{owner}/{repo}/issues")
+    suspend fun getRepoIssues(
+        @Path("owner") owner: String,
+        @Path("repo") repo: String
+    ): List<RepoIssuesResponse>
 }

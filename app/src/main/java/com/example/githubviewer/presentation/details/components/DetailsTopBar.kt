@@ -38,7 +38,6 @@ fun DetailsTopBar(
         navigationIcon = {
             IconButton(onClick = {
                 onBackClick()
-                navController.popBackStack(Route.HomeScreen.route, inclusive = false)
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_back_arrow),
@@ -47,12 +46,7 @@ fun DetailsTopBar(
             }
         },
         actions = {
-            IconButton(onClick = onShareClick) {
-                Icon(
-                    imageVector = Icons.Default.Share,
-                    contentDescription = null
-                )
-            }
+
         },
     )
 }

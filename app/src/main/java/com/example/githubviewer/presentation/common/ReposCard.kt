@@ -26,15 +26,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.githubviewer.R
+import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.domain.model.License
 import com.example.githubviewer.domain.model.Owner
-import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.util.Dimens.extraSmallPadding
 import com.example.githubviewer.util.Dimens.reposCardSize
 
 
 @Composable
-
 fun repoCard(
     modifier: Modifier = Modifier,
     repo: RepoDetailsResponse,
@@ -63,7 +62,7 @@ fun repoCard(
                 .fillMaxWidth()
         ) {
             Text(
-                text = repo.name,
+                text = repo.name ?: "Unknown Name",
                 style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                 color = colorResource(id = R.color.body),
                 maxLines = 1,
@@ -72,31 +71,31 @@ fun repoCard(
 
             Spacer(modifier = Modifier.height(extraSmallPadding))
 
+            /*   // Stars count with star icon
+               Row(
+                   verticalAlignment = Alignment.CenterVertically,
+                   horizontalArrangement = Arrangement.spacedBy(extraSmallPadding)
+               ) {
+                   Icon(
+                       painter = painterResource(id = R.drawable.baseline_star_24),
+                       contentDescription = "Star Icon",
+                       tint = colorResource(id = R.color.text_title)
+                   )
 
-            /*   Row(
-                 verticalAlignment = Alignment.CenterVertically,
-                 horizontalArrangement = Arrangement.spacedBy(extraSmallPadding)
-             ) {
+                   Text(
+                       text = "${repo.stargazers_count ?: 0}",
+                       style = MaterialTheme.typography.bodyMedium,
+                       color = colorResource(id = R.color.text_title),
+                       maxLines = 1,
+                       overflow = TextOverflow.Ellipsis
+                   )
+               }*/
 
-               Icon(
-                     painter = painterResource(id = R.drawable.baseline_star_24),
-                     contentDescription = "Star Icon",
-                     tint = colorResource(id = R.color.text_title)
-                 )
-
-
-                 Text(
-                     text = "${repo.subscribers_count}",
-                     style = MaterialTheme.typography.bodyMedium,
-                     color = colorResource(id = R.color.text_title),
-                     maxLines = 1,
-                     overflow = TextOverflow.Ellipsis
-                 )
-            }*/
+            Spacer(modifier = Modifier.height(extraSmallPadding))
 
             // Description Text
             Text(
-                text = repo.description ?: "",
+                text = repo.description ?: "No description available",
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.text_title),
                 maxLines = 3,

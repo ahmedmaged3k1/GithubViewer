@@ -31,13 +31,16 @@ import com.example.githubviewer.domain.model.License
 import com.example.githubviewer.domain.model.Owner
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.presentation.details.components.DetailsTopBar
+import com.example.githubviewer.presentation.nvgraph.Route
 import com.example.githubviewer.ui.theme.GithubViewerTheme
 
 
 @Composable
 fun DetailsScreen(
     repoDetailsResponse: RepoDetailsResponse,
-    navController: NavHostController
+    navController: NavHostController,
+
+
 ) {
     Column(
         modifier = Modifier
@@ -47,7 +50,8 @@ fun DetailsScreen(
         DetailsTopBar(
             navController = navController,
             onShareClick = { /*TODO*/ },
-            onBackClick = { navController.popBackStack() }
+            onBackClick = {    navController.popBackStack(Route.HomeScreen.route, inclusive = false)
+            }
         )
 
         Column(
@@ -112,6 +116,19 @@ fun DetailsScreen(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
+                // License name with corresponding icon
+                val licenseIcon = painterResource(id = R.drawable.baseline_house_24)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(painter = licenseIcon, contentDescription = null, tint = colorResource(id = R.color.text_title))
+                    Text(
+                        text = details.license.name ?: "Unknown License",
+                        color = colorResource(id = R.color.body)
+                    )
+                }
+                Spacer(modifier = Modifier.height(10.dp))
 
                 // Subscribers count with bell icon
                 val subscribersIcon = painterResource(id = R.drawable.baseline_doorbell_24)
@@ -126,7 +143,7 @@ fun DetailsScreen(
 
                 // Owner and Repo names
                 Text(
-                    text = "Owner: ${details.owner.login}",
+                    text = "Owner: ${details.owner.login ?: "Unknown"}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text_title)
@@ -136,7 +153,7 @@ fun DetailsScreen(
                         .padding(vertical = 8.dp)
                 )
                 Text(
-                    text = "Repository: ${details.name}",
+                    text = "Repository: ${details.name ?: "Unknown"}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text_title)
@@ -148,7 +165,12 @@ fun DetailsScreen(
 
                 // Button to navigate to the issues screen
                 Button(
-                    onClick = {  },
+                    onClick = {
+                        navController.navigate(Route.IssuesScreen.route)
+
+
+                    }
+                    ,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text("View Issues")
