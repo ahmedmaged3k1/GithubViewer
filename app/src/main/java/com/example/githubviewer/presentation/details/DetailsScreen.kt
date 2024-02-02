@@ -3,7 +3,6 @@ package com.example.githubviewer.presentation.details
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,117 +29,145 @@ import com.example.githubviewer.R
 import com.example.githubviewer.data.remote.dto.License
 import com.example.githubviewer.data.remote.dto.Owner
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
-import com.example.githubviewer.presentation.common.SearchBar
 import com.example.githubviewer.presentation.details.components.DetailsTopBar
 import com.example.githubviewer.ui.theme.GithubViewerTheme
-import com.example.githubviewer.util.Dimens
 
 
 @Composable
 fun DetailsScreen(
     repoDetailsResponse: RepoDetailsResponse,
     navigateToIssues: (owner: String, repoName: String) -> Unit,
-    owner: String,
-    repoName: String,
-    isDarkTheme: Boolean
+    navigateUp: () -> Unit
 ) {
-    val backgroundColor = if (isDarkTheme) Color.Black else Color.White
-    val textColor = if (isDarkTheme) Color.White else Color.Black
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .background(color = backgroundColor)
+            .background(color = colorResource(id = R.color.input_background))
     ) {
-        // Display repository details
-        repoDetailsResponse.let { details ->
-            // GitHub Icon
-            val githubIcon = painterResource(id = R.drawable.github_icon)
-            Image(
-                painter = githubIcon,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(72.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 16.dp)
-            )
+        DetailsTopBar(
+            onShareClick = { /*TODO*/ },
+            onBackClick = {/*TODO*/}
+        )
 
-            Text(
-                text = details.name,
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = textColor
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-            )
-            Text(
-                text = details.description ?: "No description available",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    color = textColor
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            )
 
-            // Other details...
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            // Display repository details
+            repoDetailsResponse.let { details ->
+                // GitHub Icon
+                val githubIcon = painterResource(id = R.drawable.github_icon)
+                Image(
+                    painter = githubIcon,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(72.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 16.dp)
+                )
+
+                Text(
+                    text = details.name,
+                    style = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(id = R.color.body)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                )
+                Text(
+                    text = details.description ?: "No description available",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        color = colorResource(id = R.color.body)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+
                 // Stars count with star icon
                 val starIcon = painterResource(id = R.drawable.baseline_star_24)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(painter = starIcon, contentDescription = null, tint = colorResource(id = R.color.text_title))
+                    Text(text = details.stargazers_count.toString(), color = colorResource(id = R.color.body))
+                }
+                Spacer(modifier = Modifier.height(10.dp))
 
+                // Watchers count with eye icon
+                val watchersIcon = painterResource(id = R.drawable.baseline_remove_red_eye_24)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Icon(painter = starIcon, contentDescription = null, tint = textColor)
-                    Text(text = details.stargazers_count.toString(), color = textColor)
+                    Icon(painter = watchersIcon, contentDescription = null, tint = colorResource(id = R.color.text_title))
+                    Text(text = details.watchers_count.toString(), color = colorResource(id = R.color.body))
                 }
+                Spacer(modifier = Modifier.height(10.dp))
 
-                // Add other details...
-            }
+                // License name with corresponding icon
+                val licenseIcon = painterResource(id = R.drawable.baseline_house_24)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(painter = licenseIcon, contentDescription = null, tint = colorResource(id = R.color.text_title))
+                    Text(text = details.license.name, color = colorResource(id = R.color.body))
+                }
+                Spacer(modifier = Modifier.height(10.dp))
 
-            // Owner and Repo names
-            Text(
-                text = "Owner: ${details.owner.login}",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    color = textColor
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-            )
-            Text(
-                text = "Repository: ${details.name}",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    color = textColor
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            )
+                // Subscribers count with bell icon
+                val subscribersIcon = painterResource(id = R.drawable.baseline_doorbell_24)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(painter = subscribersIcon, contentDescription = null, tint = colorResource(id = R.color.text_title))
+                    Text(text = details.subscribers_count.toString(), color = colorResource(id = R.color.body))
+                }
+                Spacer(modifier = Modifier.height(10.dp))
 
-            // Button to navigate to the issues screen
-            Button(
-                onClick = { navigateToIssues(details.owner.login, details.name) },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text("View Issues")
+                // Owner and Repo names
+                Text(
+                    text = "Owner: ${details.owner.login}",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        color = colorResource(id = R.color.text_title)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                )
+                Text(
+                    text = "Repository: ${details.name}",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        color = colorResource(id = R.color.text_title)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                )
+
+                // Button to navigate to the issues screen
+                Button(
+                    onClick = { navigateToIssues(details.owner.login, details.name) },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text("View Issues")
+                }
             }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -257,13 +284,7 @@ fun DetailsScreenPreview() {
             web_commit_signoff_required = false
         )
 
-        DetailsTopBar(
-            onBrowsingClick = { /*TODO*/ },
-            onShareClick = { /*TODO*/ },
-            onBookMarkClick = { /*TODO*/ }) {
-            
-        }
-        Spacer(modifier = Modifier.height(250.dp))
+
 
         DetailsScreen(
             fakeRepoDetails,
@@ -271,9 +292,8 @@ fun DetailsScreenPreview() {
                 // Call your function with the provided owner and repoName
                 // For example:
             },
-            owner = "Ahmed",
-            repoName = "Maged",
-            isSystemInDarkTheme()
+
+            navigateUp = {}
         )
 
     }

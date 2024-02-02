@@ -21,11 +21,10 @@ import com.example.githubviewer.ui.theme.GithubViewerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsTopBar(
-    onBrowsingClick: () -> Unit,
     onShareClick: () -> Unit,
-    onBookMarkClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
+
 
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
@@ -64,9 +63,7 @@ fun DetailsTopBarPreview() {
     GithubViewerTheme(dynamicColor = false) {
         DetailsTopBar(
             onShareClick = { /*TODO*/ },
-            onBookMarkClick = { /*TODO*/ },
-            onBrowsingClick = {}) {
-
-        }
+            onBackClick = {/*TODO*/}
+        )
     }
 }
