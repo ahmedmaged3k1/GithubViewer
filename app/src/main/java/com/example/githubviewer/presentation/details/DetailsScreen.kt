@@ -25,9 +25,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.githubviewer.R
-import com.example.githubviewer.data.remote.dto.License
-import com.example.githubviewer.data.remote.dto.Owner
+import com.example.githubviewer.domain.model.License
+import com.example.githubviewer.domain.model.Owner
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.presentation.details.components.DetailsTopBar
 import com.example.githubviewer.ui.theme.GithubViewerTheme
@@ -36,8 +37,7 @@ import com.example.githubviewer.ui.theme.GithubViewerTheme
 @Composable
 fun DetailsScreen(
     repoDetailsResponse: RepoDetailsResponse,
-    navigateToIssues: (owner: String, repoName: String) -> Unit,
-    navigateUp: () -> Unit
+    navController: NavHostController
 ) {
     Column(
         modifier = Modifier
@@ -45,10 +45,10 @@ fun DetailsScreen(
             .background(color = colorResource(id = R.color.input_background))
     ) {
         DetailsTopBar(
+            navController = navController,
             onShareClick = { /*TODO*/ },
-            onBackClick = {/*TODO*/}
+            onBackClick = { navController.popBackStack() }
         )
-
 
         Column(
             modifier = Modifier
@@ -112,16 +112,6 @@ fun DetailsScreen(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // License name with corresponding icon
-                val licenseIcon = painterResource(id = R.drawable.baseline_house_24)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Icon(painter = licenseIcon, contentDescription = null, tint = colorResource(id = R.color.text_title))
-                    Text(text = details.license.name, color = colorResource(id = R.color.body))
-                }
-                Spacer(modifier = Modifier.height(10.dp))
 
                 // Subscribers count with bell icon
                 val subscribersIcon = painterResource(id = R.drawable.baseline_doorbell_24)
@@ -158,7 +148,7 @@ fun DetailsScreen(
 
                 // Button to navigate to the issues screen
                 Button(
-                    onClick = { navigateToIssues(details.owner.login, details.name) },
+                    onClick = {  },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text("View Issues")
@@ -286,15 +276,7 @@ fun DetailsScreenPreview() {
 
 
 
-        DetailsScreen(
-            fakeRepoDetails,
-            navigateToIssues = { owner, repoName ->
-                // Call your function with the provided owner and repoName
-                // For example:
-            },
 
-            navigateUp = {}
-        )
 
     }
 }

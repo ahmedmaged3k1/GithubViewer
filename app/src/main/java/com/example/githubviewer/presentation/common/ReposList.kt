@@ -47,7 +47,7 @@ fun reposList(
 fun handlePagingResult(
     repos :LazyPagingItems<RepoDetailsResponse>,
 
-) : Boolean {
+    ) : Boolean {
     val loadState = repos.loadState
     val error = when{
         loadState.refresh is LoadState.Error->  loadState.refresh as LoadState.Error

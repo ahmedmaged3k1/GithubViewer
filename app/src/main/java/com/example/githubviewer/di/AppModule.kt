@@ -1,6 +1,10 @@
 package com.example.githubviewer.di
 
 import android.app.Application
+import androidx.room.Room
+import com.example.githubviewer.data.local.RepoDao
+import com.example.githubviewer.data.local.RepoTypeConverter
+import com.example.githubviewer.data.local.ReposDatabase
 import com.example.githubviewer.data.manager.LocalUserManagerImpl
 import com.example.githubviewer.data.remote.ReposApi
 import com.example.githubviewer.data.repository.ReposRepositoryImpl
@@ -49,7 +53,7 @@ object AppModule {
     }
     @Provides
     @Singleton
-    fun provideReposRepository(reposApi: ReposApi) : ReposRepository = ReposRepositoryImpl(reposApi )
+    fun provideReposRepository(reposApi: ReposApi,repoDao: RepoDao) : ReposRepository = ReposRepositoryImpl(reposApi,repoDao )
     @Provides
     @Singleton
     fun provideReposUseCases(reposRepository: ReposRepository):ReposUseCases{
@@ -58,6 +62,24 @@ object AppModule {
             getReposDetails = GetRepoDetails(reposRepository)
         )
     }
+    @Provides
+    @Singleton
+    fun provideReposDatabase(
+        application: Application
+    ): ReposDatabase {
+        return Room.databaseBuilder(
+            context = application,
+            klass = ReposDatabase::class.java,
+            name = "news_db"
+        ).addTypeConverter(RepoTypeConverter())
+            .fallbackToDestructiveMigration()
+            .build()
+    }
 
+    @Provides
+    @Singleton
+    fun provideRepoDao(
+        repoDatabase: ReposDatabase
+    ): RepoDao = repoDatabase.repoDao
 
 }

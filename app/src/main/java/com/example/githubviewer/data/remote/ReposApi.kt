@@ -1,13 +1,13 @@
 package com.example.githubviewer.data.remote
 
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
-import com.example.githubviewer.data.remote.dto.ReposResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ReposApi {
     @GET("repositories")
-    suspend fun getRepos(): List<RepoDetailsResponse>
+    suspend fun getRepos(@Query("page") page: Int): List<RepoDetailsResponse>
 
     @GET("repos/{owner}/{repo}")
     suspend fun getRepoDetails(

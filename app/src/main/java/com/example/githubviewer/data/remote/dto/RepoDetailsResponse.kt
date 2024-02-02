@@ -1,9 +1,15 @@
 package com.example.githubviewer.data.remote.dto
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.example.githubviewer.domain.model.License
+import com.example.githubviewer.domain.model.Owner
+
+
 data class RepoDetailsResponse(
-    val allow_forking: Boolean,
+    var allow_forking: Boolean,
     val archive_url: String,
-    val archived: Boolean,
+    var archived: Boolean,
     val assignees_url: String,
     val blobs_url: String,
     val branches_url: String,
@@ -18,10 +24,10 @@ data class RepoDetailsResponse(
     val default_branch: String,
     val deployments_url: String,
     val description: String,
-    val disabled: Boolean,
+    var disabled: Boolean,
     val downloads_url: String,
     val events_url: String,
-    val fork: Boolean,
+    var fork: Boolean,
     val forks: Int,
     val forks_count: Int,
     val forks_url: String,
@@ -30,17 +36,17 @@ data class RepoDetailsResponse(
     val git_refs_url: String,
     val git_tags_url: String,
     val git_url: String,
-    val has_discussions: Boolean,
-    val has_downloads: Boolean,
-    val has_issues: Boolean,
-    val has_pages: Boolean,
-    val has_projects: Boolean,
-    val has_wiki: Boolean,
+    var has_discussions: Boolean,
+    var has_downloads: Boolean,
+    var has_issues: Boolean,
+    var has_pages: Boolean,
+    var has_projects: Boolean,
+    var has_wiki: Boolean,
     val homepage: String,
     val hooks_url: String,
     val html_url: String,
     val id: Int,
-    val is_template: Boolean,
+    var is_template: Boolean,
     val issue_comment_url: String,
     val issue_events_url: String,
     val issues_url: String,
@@ -59,7 +65,7 @@ data class RepoDetailsResponse(
     val open_issues: Int,
     val open_issues_count: Int,
     val owner: Owner,
-    val private: Boolean,
+    var private: Boolean,
     val pulls_url: String,
     val pushed_at: String,
     val releases_url: String,
@@ -78,9 +84,22 @@ data class RepoDetailsResponse(
     val topics: List<Any>,
     val trees_url: String,
     val updated_at: String,
-    val url: String,
+    @PrimaryKey val url: String = "",
     val visibility: String,
     val watchers: Int,
     val watchers_count: Int,
-    val web_commit_signoff_required: Boolean
+    var web_commit_signoff_required: Boolean
 )
+/*
+   constructor() : this(
+        false, "", false, "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "", false, "", "",
+        false, 0, 0, "", "", "", "", "", "", "",
+        false, false, false, false, false, false, "", "",
+        "", 0, false, "", "", "", "", "", "", "",
+        "", "", License("","","","",""), "", "", null, "", 0, "",
+        "", 0, 0, Owner("","","","","","","",0,"","","","","",true,"","","",""), false, "", "", "", 0, "", 0,
+        "", "", 0, "", "", "", "", "", "", null, listOf(),
+        "", "", "", "", 0, 0, false
+    )
+ */

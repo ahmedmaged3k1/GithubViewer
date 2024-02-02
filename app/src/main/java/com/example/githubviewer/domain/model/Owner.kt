@@ -1,6 +1,10 @@
-package com.example.githubviewer.data.remote.dto
+package com.example.githubviewer.domain.model
 
-data class OwnerX(
+import androidx.room.Entity
+
+@Entity
+
+data class Owner(
     val avatar_url: String,
     val events_url: String,
     val followers_url: String,

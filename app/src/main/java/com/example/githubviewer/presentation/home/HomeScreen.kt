@@ -22,13 +22,13 @@ import com.example.githubviewer.R
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.presentation.common.SearchBar
 import com.example.githubviewer.presentation.common.reposList
-import com.example.githubviewer.presentation.nvgraph.Route
 import com.example.githubviewer.util.Dimens
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(repos: LazyPagingItems<RepoDetailsResponse>, navigate: (String) -> Unit) {
+fun HomeScreen(repos: LazyPagingItems<RepoDetailsResponse>,
+               navigate:  (owner: String, repoName: String) -> Unit) {
 
     val titles by remember {
         derivedStateOf {
@@ -69,7 +69,7 @@ fun HomeScreen(repos: LazyPagingItems<RepoDetailsResponse>, navigate: (String) -
             onValueChange = {},
             onSearch = {},
             onClick = {
-                navigate(Route.SearchScreen.route)
+
             }
         )
 
@@ -82,8 +82,9 @@ fun HomeScreen(repos: LazyPagingItems<RepoDetailsResponse>, navigate: (String) -
         reposList(
             modifier = Modifier.padding(horizontal = Dimens.mediumPadding1),
             repos = repos,
-            onClick = {
-                navigate(Route.DetailsScreen.route)
+            onClick = { repoDetails ->
+                navigate(repoDetails.owner.login, repoDetails.name)
+
             }
         )
 

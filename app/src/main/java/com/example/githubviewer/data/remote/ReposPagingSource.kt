@@ -1,21 +1,23 @@
 package com.example.githubviewer.data.remote
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.githubviewer.data.local.RepoDao
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 
-class ReposPagingSource(private val reposApi: ReposApi) : PagingSource<Int, RepoDetailsResponse>() {
+class ReposPagingSource(private val reposApi: ReposApi,
+    private val repoDao: RepoDao
+) : PagingSource<Int, RepoDetailsResponse>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RepoDetailsResponse> {
         return try {
-            val reposList = reposApi.getRepos()
+            val page = params.key ?: 1 // Default to the first page if key is null
+            val reposList = reposApi.getRepos(page)
 
-            Log.d("TAG", "load:  ${reposList.toString()}")
             LoadResult.Page(
                 data = reposList,
-                prevKey = params.key?.minus(1),
-                nextKey = params.key?.plus(1)
+                prevKey = if (page == 1) null else page - 1,
+                nextKey = if (reposList.isEmpty()) null else page + 1
             )
         } catch (e: Exception) {
             e.printStackTrace()

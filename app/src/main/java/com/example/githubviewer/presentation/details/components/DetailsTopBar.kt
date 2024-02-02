@@ -15,17 +15,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import com.example.githubviewer.R
+import com.example.githubviewer.presentation.nvgraph.Route
 import com.example.githubviewer.ui.theme.GithubViewerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsTopBar(
+    navController: NavHostController,
     onShareClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
-
-
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.mediumTopAppBarColors(
@@ -35,7 +36,10 @@ fun DetailsTopBar(
         ),
         title = {},
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
+            IconButton(onClick = {
+                onBackClick()
+                navController.popBackStack(Route.HomeScreen.route, inclusive = false)
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_back_arrow),
                     contentDescription = null,
@@ -43,27 +47,12 @@ fun DetailsTopBar(
             }
         },
         actions = {
-
-
             IconButton(onClick = onShareClick) {
                 Icon(
                     imageVector = Icons.Default.Share,
                     contentDescription = null
                 )
             }
-
         },
     )
-}
-
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun DetailsTopBarPreview() {
-    GithubViewerTheme(dynamicColor = false) {
-        DetailsTopBar(
-            onShareClick = { /*TODO*/ },
-            onBackClick = {/*TODO*/}
-        )
-    }
 }
