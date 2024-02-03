@@ -11,19 +11,25 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(private val reposUseCases: ReposUseCases): ViewModel() {
 
-     var loadedRepoDetails: RepoDetailsResponse? = null
-    var owner : String? =null
-    var repoName : String? =null
+    var loadedRepoDetails: RepoDetailsResponse = RepoDetailsResponse() // Provide a default object
+    var owner: String? = null
+    var repoName: String? = null
 
-    suspend fun getRepoDetails(owner : String?, repo : String?): RepoDetailsResponse? {
-
-            if (repo != null&&owner!=null) {
+    suspend fun getRepoDetails(owner: String?, repo: String?): RepoDetailsResponse {
+        if (repo != null && owner != null) {
+            try {
                 loadedRepoDetails = reposUseCases.getReposDetails(owner, repo)
+            } catch (e: Exception) {
+                // Handle network issues or any exception
+                Log.e("DetailsViewModel", "Error fetching repo details: ${e.message}")
+                // Return a default or empty RepoDetailsResponse in case of an error
+                loadedRepoDetails = RepoDetailsResponse()
             }
+        }
 
         return loadedRepoDetails
-
     }
+
 
 
 

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     Log.d("TAG", "onCreate : Navigation ${viewModel.startDestination} ")
 
 
-                    NavGraph(startDestination = Route.ReposNavigation.route)
+                    NavGraph(startDestination = Route.ReposNavigation.route, applicationContext)
 
                 }
 

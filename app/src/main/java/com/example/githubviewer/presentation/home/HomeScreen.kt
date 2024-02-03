@@ -1,5 +1,6 @@
 package com.example.githubviewer.presentation.home
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -39,9 +40,7 @@ fun HomeScreen(repos: LazyPagingItems<RepoDetailsResponse>,
                navigate:  (owner: String, repoName: String) -> Unit
 ) {
 
-
-
-
+    Log.d("TAG", "HomeScreen:  Entered Home")
     Column(
         modifier = Modifier
             .fillMaxSize()

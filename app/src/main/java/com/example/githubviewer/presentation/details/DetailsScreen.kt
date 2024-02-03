@@ -2,9 +2,11 @@ package com.example.githubviewer.presentation.details
 
 
 import android.content.res.Configuration
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +21,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -28,12 +33,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.example.githubviewer.R
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.domain.model.License
 import com.example.githubviewer.domain.model.Owner
+import com.example.githubviewer.presentation.common.EmptyScreen
 import com.example.githubviewer.presentation.common.NetworkUtils
+import com.example.githubviewer.presentation.common.handlePagingResult
 import com.example.githubviewer.presentation.details.components.DetailsTopBar
+import com.example.githubviewer.presentation.issues.ShimmerEffectPlaceholder
 import com.example.githubviewer.presentation.nvgraph.Route
 import com.example.githubviewer.ui.theme.GithubViewerTheme
 
@@ -42,62 +52,10 @@ import com.example.githubviewer.ui.theme.GithubViewerTheme
 fun DetailsScreen(
     repoDetailsResponse: RepoDetailsResponse?,
     navController: NavHostController,
+    repos: LazyPagingItems<RepoDetailsResponse>
+
 ) {
-    // Check for network error or null response
-    // In your composable
-    val networkUtils = NetworkUtils(context = LocalContext.current)
-
-// Check network status
-    val isNetworkAvailable = networkUtils.isNetworkAvailable()
-    if (!isNetworkAvailable) {
-        // Show network error icon
-        Image(
-            painter = painterResource(id = R.drawable.ic_network_error),
-            contentDescription = "Network Error",
-            modifier = Modifier
-                .size(100.dp)
-
-                .padding(16.dp)
-        )
-        Text(
-            text = "Network Error",
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.text_title)
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-    } else if (repoDetailsResponse == null) {
-        // Show data not available message
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = colorResource(id = R.color.input_background))
-        ) {
-            DetailsTopBar(
-                navController = navController,
-                onShareClick = { /*TODO*/ },
-                onBackClick = {
-                    navController.popBackStack(Route.HomeScreen.route, inclusive = false)
-                }
-            )
-
-            Text(
-                text = "Data not available",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.text_title)
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
-        }
-    } else {
+    if (handleDetailsResult(repos = repos)){
         // Display repository details
         Column(
             modifier = Modifier
@@ -128,7 +86,7 @@ fun DetailsScreen(
                 )
 
                 Text(
-                    text = repoDetailsResponse.name,
+                    text = repoDetailsResponse?.name?:"No name available",
                     style = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -139,7 +97,7 @@ fun DetailsScreen(
                         .padding(bottom = 8.dp)
                 )
                 Text(
-                    text = repoDetailsResponse.description ?: "No description available",
+                    text = repoDetailsResponse?.description ?: "No description available",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.body)
@@ -162,7 +120,7 @@ fun DetailsScreen(
                         tint = colorResource(id = R.color.text_title)
                     )
                     Text(
-                        text = repoDetailsResponse.stargazers_count.toString(),
+                        text = repoDetailsResponse?.stargazers_count.toString()?:"0",
                         color = colorResource(id = R.color.body)
                     )
                 }
@@ -180,7 +138,7 @@ fun DetailsScreen(
                         tint = colorResource(id = R.color.text_title)
                     )
                     Text(
-                        text = repoDetailsResponse.watchers_count.toString(),
+                        text = repoDetailsResponse?.watchers_count.toString()?:"0",
                         color = colorResource(id = R.color.body)
                     )
                 }
@@ -199,7 +157,7 @@ fun DetailsScreen(
                         tint = colorResource(id = R.color.text_title)
                     )
                     Text(
-                        text = repoDetailsResponse.subscribers_count.toString(),
+                        text = repoDetailsResponse?.subscribers_count.toString(),
                         color = colorResource(id = R.color.body)
                     )
                 }
@@ -207,7 +165,7 @@ fun DetailsScreen(
 
                 // Owner and Repo names
                 Text(
-                    text = "Owner: ${repoDetailsResponse.owner.login ?: "Unknown"}",
+                    text = "Owner: ${repoDetailsResponse?.owner?.login ?: "Unknown"}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text_title)
@@ -217,7 +175,7 @@ fun DetailsScreen(
                         .padding(vertical = 8.dp)
                 )
                 Text(
-                    text = "Repository: ${repoDetailsResponse.name ?: "Unknown"}",
+                    text = "Repository: ${repoDetailsResponse?.name ?: "Unknown"}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text_title)
@@ -230,7 +188,7 @@ fun DetailsScreen(
                 // Button to navigate to the issues screen
                 Button(
                     onClick = {
-                        navController.navigate("${Route.IssuesScreen.route}/${repoDetailsResponse.owner.login}/${repoDetailsResponse.name}")
+                        navController.navigate("${Route.IssuesScreen.route}/${repoDetailsResponse?.owner?.login}/${repoDetailsResponse?.name}")
                     },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
@@ -239,7 +197,186 @@ fun DetailsScreen(
             }
         }
     }
+
+
+
+
+    }
+
+@Composable
+fun handleDetailsResult(
+    repos : LazyPagingItems<RepoDetailsResponse>,
+
+    ) : Boolean {
+    val loadState = repos.loadState
+    val error = when {
+        loadState.refresh is LoadState.Error -> (loadState.refresh as LoadState.Error).error
+        loadState.prepend is LoadState.Error -> (loadState.prepend as LoadState.Error).error
+        loadState.append is LoadState.Error -> (loadState.append as LoadState.Error).error
+        else -> null
+    }
+
+    return when {
+        loadState.refresh is  LoadState.Loading ->{
+            ShimmerEffectDetailsPlaceholder()
+            false
+        }
+        error != null ->{
+            EmptyScreen ()
+            false
+        }
+        else->{
+            true
+        }
+
+
+    }
+
+
 }
+@Composable
+fun ShimmerEffectDetailsPlaceholder() {
+    val gradientWidth = 200.dp
+
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 90.dp)
+            .padding(20.dp)
+            .animateContentSize()
+    ) {
+        // Content inside the shimmering Box
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            // GitHub Icon
+            Icon(
+                painter = painterResource(id = R.drawable.github_icon),
+                contentDescription = null,
+                tint = Color.Gray.copy(alpha = 0.4f),
+                modifier = Modifier
+                    .size(72.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp)
+            )
+
+            Text(
+                text = "Loading...",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray.copy(alpha = 0.4f)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            )
+
+            Text(
+                text = "Loading...",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = Color.Gray.copy(alpha = 0.4f)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Stars count with star icon
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_star_24),
+                    contentDescription = null,
+                    tint = Color.Gray.copy(alpha = 0.4f)
+                )
+                Text(
+                    text = "0",
+                    color = Color.Gray.copy(alpha = 0.4f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Watchers count with eye icon
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_remove_red_eye_24),
+                    contentDescription = null,
+                    tint = Color.Gray.copy(alpha = 0.4f)
+                )
+                Text(
+                    text = "0",
+                    color = Color.Gray.copy(alpha = 0.4f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Subscribers count with bell icon
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_doorbell_24),
+                    contentDescription = null,
+                    tint = Color.Gray.copy(alpha = 0.4f)
+                )
+                Text(
+                    text = "0",
+                    color = Color.Gray.copy(alpha = 0.4f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Owner and Repo names placeholders
+            Text(
+                text = "Owner: Loading...",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = Color.Gray.copy(alpha = 0.4f)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            )
+
+            Text(
+                text = "Repository: Loading...",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = Color.Gray.copy(alpha = 0.4f)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
+
+            // Button to navigate to the issues screen
+            Button(
+                onClick = {},
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text("View Issues")
+            }
+        }
+    }
+}
+
 
 
 @Preview(showBackground = true)

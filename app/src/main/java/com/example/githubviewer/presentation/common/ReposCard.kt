@@ -39,7 +39,7 @@ fun repoCard(
     repo: RepoDetailsResponse,
     onclick: () -> Unit
 ) {
-    val context = LocalContext.current
+    Log.d("TAG", "reposList: ${repo.toString()} ")
 
     Row(
         modifier = modifier

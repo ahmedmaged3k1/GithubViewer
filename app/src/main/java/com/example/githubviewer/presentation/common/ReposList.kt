@@ -1,5 +1,8 @@
 package com.example.githubviewer.presentation.common
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,12 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.util.Dimens
 import com.example.githubviewer.util.Dimens.extraSmallPadding2
 import com.example.githubviewer.util.Dimens.mediumPadding1
+import java.net.SocketTimeoutException
 
 @Composable
 fun reposList(
@@ -23,9 +28,10 @@ fun reposList(
 ) {
 
     val handlePagingResult = handlePagingResult(repos)
-
-
+    Log.d("TAG", "reposList:  Handle $handlePagingResult")
     if (handlePagingResult) {
+        Log.d("TAG", "reposList:  Right")
+
         LazyColumn(
             modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(mediumPadding1),
@@ -44,10 +50,7 @@ fun reposList(
 }
 
 @Composable
-fun handlePagingResult(
-    repos :LazyPagingItems<RepoDetailsResponse>,
-
-    ) : Boolean {
+fun handlePagingResult(repos: LazyPagingItems<RepoDetailsResponse>): Boolean {
     val loadState = repos.loadState
     val error = when {
         loadState.refresh is LoadState.Error -> (loadState.refresh as LoadState.Error).error
@@ -56,24 +59,39 @@ fun handlePagingResult(
         else -> null
     }
 
+    // Log the load state for debugging
+    Log.d("TAG", "Load State: ${loadState.refresh}, ${loadState.prepend}, ${loadState.append}")
+
     return when {
-        loadState.refresh is  LoadState.Loading ->{
+        loadState.refresh is LoadState.Loading -> {
+            Log.d("TAG", "Loading State")
             ShimmerEffect()
             false
         }
-        error != null ->{
-            EmptyScreen ()
-           false
+        error != null -> {
+            Log.d("TAG", "Error State: $error")
+            if (error is SocketTimeoutException) {
+                // Handle slow internet connection
+                // You can show a specific message or UI for slow internet
+
+                Toast.makeText(LocalContext.current, "Slow Internet Connection", Toast.LENGTH_SHORT).show()
+                EmptyScreen()
+
+            } else {
+                // Handle other types of errors
+                EmptyScreen()
+                Toast.makeText(LocalContext.current, "No Internet Connection", Toast.LENGTH_SHORT).show()
+
+            }
+            false
         }
-        else->{
+        else -> {
+            Log.d("TAG", "Success State")
             true
         }
-
-
     }
-
-    
 }
+
 
 @Composable
 private fun ShimmerEffect() {
