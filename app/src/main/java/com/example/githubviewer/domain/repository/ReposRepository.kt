@@ -11,5 +11,4 @@ interface ReposRepository {
      suspend fun getRepoDetails(owner: String, repo: String): RepoDetailsResponse
     suspend fun getRepoIssues(owner: String, repo: String): List<RepoIssuesResponse>
 
-    fun getAllDetailedRepos(): Flow<List<RepoDetailsResponse>>
 }

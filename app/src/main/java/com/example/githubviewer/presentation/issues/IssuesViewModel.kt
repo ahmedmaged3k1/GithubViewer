@@ -1,5 +1,6 @@
 package com.example.githubviewer.presentation.issues
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.data.remote.dto.RepoIssuesResponse
@@ -17,6 +18,7 @@ class IssuesViewModel @Inject constructor(private val reposUseCases: ReposUseCas
         if (repo != null&&owner!=null) {
             loadedRepoIssues = reposUseCases.getReposIssues(owner, repo)[0]
         }
+        Log.d("TAG", "getRepoIssues: Response ${loadedRepoIssues.toString()} ")
 
         return loadedRepoIssues
 

@@ -3,11 +3,10 @@ package com.example.githubviewer.domain.model
 import androidx.room.Dao
 import androidx.room.Entity
 
-@Entity
 data class License(
-    val key: String,
-    val name: String,
-    val node_id: String,
-    val spdx_id: String,
-    val url: String
+    val key: String = "No key available",
+    val name: String = "No name available",
+    val node_id: String = "No node ID available",
+    val spdx_id: String = "No SPDX ID available",
+    val url: String = "No URL available"
 )

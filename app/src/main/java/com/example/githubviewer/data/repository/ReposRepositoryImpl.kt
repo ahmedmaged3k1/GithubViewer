@@ -17,8 +17,7 @@ class ReposRepositoryImpl(private val reposApi: ReposApi,
                           private val repoDao: RepoDao
 )
     :ReposRepository {
-    private val _allDetailedRepos = MutableStateFlow<List<RepoDetailsResponse>>(emptyList())
-    override fun getAllDetailedRepos(): Flow<List<RepoDetailsResponse>> = _allDetailedRepos
+    val _allDetailedRepos = MutableStateFlow<List<RepoDetailsResponse>>(emptyList())
 
     override fun getRepos(): Flow<PagingData<RepoDetailsResponse>> {
         return Pager(
@@ -42,10 +41,8 @@ class ReposRepositoryImpl(private val reposApi: ReposApi,
     }
 
     override suspend fun getRepoIssues(owner: String, repo: String): List<RepoIssuesResponse> {
-        val repoIssues = reposApi.getRepoIssues(owner, repo)
 
-        Log.d("TAG", "getRepoIssues: ${repoIssues.toString()} ")
-        return repoIssues
+        return reposApi.getRepoIssues(owner, repo)
     }
 
     companion object {

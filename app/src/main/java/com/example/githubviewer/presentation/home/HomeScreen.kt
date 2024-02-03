@@ -1,5 +1,7 @@
 package com.example.githubviewer.presentation.home
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -13,14 +15,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.example.githubviewer.R
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
+import com.example.githubviewer.presentation.common.EmptyContent
+import com.example.githubviewer.presentation.common.NetworkUtils
 import com.example.githubviewer.presentation.common.SearchBar
+import com.example.githubviewer.presentation.common.parseErrorMessage
 import com.example.githubviewer.presentation.common.reposList
 import com.example.githubviewer.util.Dimens
 
@@ -31,20 +39,9 @@ fun HomeScreen(repos: LazyPagingItems<RepoDetailsResponse>,
                navigate:  (owner: String, repoName: String) -> Unit
 ) {
 
-    val titles by remember {
-        derivedStateOf {
-            if (repos.itemCount > 10) {
-                repos.itemSnapshotList.items
-                    .slice(IntRange(start = 0, endInclusive = 9))
-                    .joinToString(separator = "\uD83d\uDFE5") { it.name }
 
-            } else {
-                ""
-            }
 
-        }
 
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()

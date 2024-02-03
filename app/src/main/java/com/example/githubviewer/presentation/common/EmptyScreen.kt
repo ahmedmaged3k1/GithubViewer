@@ -43,8 +43,8 @@ fun EmptyScreen(error: LoadState.Error? = null) {
     }
 
     if (error == null){
-        message = "Repo Not Found"
-        icon = R.drawable.ic_search_document
+        message = "Internet Connection Error"
+        icon = R.drawable.ic_network_error
     }
 
     var startAnimation by remember {

@@ -1,5 +1,6 @@
 package com.example.githubviewer.presentation.details
 
+
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -27,9 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.githubviewer.R
+import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.domain.model.License
 import com.example.githubviewer.domain.model.Owner
-import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
+import com.example.githubviewer.presentation.common.NetworkUtils
 import com.example.githubviewer.presentation.details.components.DetailsTopBar
 import com.example.githubviewer.presentation.nvgraph.Route
 import com.example.githubviewer.ui.theme.GithubViewerTheme
@@ -37,29 +40,82 @@ import com.example.githubviewer.ui.theme.GithubViewerTheme
 
 @Composable
 fun DetailsScreen(
-    repoDetailsResponse: RepoDetailsResponse,
+    repoDetailsResponse: RepoDetailsResponse?,
     navController: NavHostController,
-
-
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = colorResource(id = R.color.input_background))
-    ) {
-        DetailsTopBar(
-            navController = navController,
-            onShareClick = { /*TODO*/ },
-            onBackClick = {    navController.popBackStack(Route.HomeScreen.route, inclusive = false)
-            }
-        )
+    // Check for network error or null response
+    // In your composable
+    val networkUtils = NetworkUtils(context = LocalContext.current)
 
+// Check network status
+    val isNetworkAvailable = networkUtils.isNetworkAvailable()
+    if (!isNetworkAvailable) {
+        // Show network error icon
+        Image(
+            painter = painterResource(id = R.drawable.ic_network_error),
+            contentDescription = "Network Error",
+            modifier = Modifier
+                .size(100.dp)
+
+                .padding(16.dp)
+        )
+        Text(
+            text = "Network Error",
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.text_title)
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+    } else if (repoDetailsResponse == null) {
+        // Show data not available message
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .fillMaxSize()
+                .background(color = colorResource(id = R.color.input_background))
         ) {
-            // Display repository details
-            repoDetailsResponse.let { details ->
+            DetailsTopBar(
+                navController = navController,
+                onShareClick = { /*TODO*/ },
+                onBackClick = {
+                    navController.popBackStack(Route.HomeScreen.route, inclusive = false)
+                }
+            )
+
+            Text(
+                text = "Data not available",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(id = R.color.text_title)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+        }
+    } else {
+        // Display repository details
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = colorResource(id = R.color.input_background))
+        ) {
+            DetailsTopBar(
+                navController = navController,
+                onShareClick = { /*TODO*/ },
+                onBackClick = {
+                    navController.popBackStack(Route.HomeScreen.route, inclusive = false)
+                }
+            )
+
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
                 // GitHub Icon
                 val githubIcon = painterResource(id = R.drawable.github_icon)
                 Image(
@@ -72,7 +128,7 @@ fun DetailsScreen(
                 )
 
                 Text(
-                    text = details.name,
+                    text = repoDetailsResponse.name,
                     style = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -83,7 +139,7 @@ fun DetailsScreen(
                         .padding(bottom = 8.dp)
                 )
                 Text(
-                    text = details.description ?: "No description available",
+                    text = repoDetailsResponse.description ?: "No description available",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.body)
@@ -100,8 +156,15 @@ fun DetailsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(painter = starIcon, contentDescription = null, tint = colorResource(id = R.color.text_title))
-                    Text(text = details.stargazers_count.toString(), color = colorResource(id = R.color.body))
+                    Icon(
+                        painter = starIcon,
+                        contentDescription = null,
+                        tint = colorResource(id = R.color.text_title)
+                    )
+                    Text(
+                        text = repoDetailsResponse.stargazers_count.toString(),
+                        color = colorResource(id = R.color.body)
+                    )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -111,24 +174,18 @@ fun DetailsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Icon(painter = watchersIcon, contentDescription = null, tint = colorResource(id = R.color.text_title))
-                    Text(text = details.watchers_count.toString(), color = colorResource(id = R.color.body))
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-
-                // License name with corresponding icon
-                val licenseIcon = painterResource(id = R.drawable.baseline_house_24)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Icon(painter = licenseIcon, contentDescription = null, tint = colorResource(id = R.color.text_title))
+                    Icon(
+                        painter = watchersIcon,
+                        contentDescription = null,
+                        tint = colorResource(id = R.color.text_title)
+                    )
                     Text(
-                        text = details.license.name ?: "Unknown License",
+                        text = repoDetailsResponse.watchers_count.toString(),
                         color = colorResource(id = R.color.body)
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
+
 
                 // Subscribers count with bell icon
                 val subscribersIcon = painterResource(id = R.drawable.baseline_doorbell_24)
@@ -136,14 +193,21 @@ fun DetailsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Icon(painter = subscribersIcon, contentDescription = null, tint = colorResource(id = R.color.text_title))
-                    Text(text = details.subscribers_count.toString(), color = colorResource(id = R.color.body))
+                    Icon(
+                        painter = subscribersIcon,
+                        contentDescription = null,
+                        tint = colorResource(id = R.color.text_title)
+                    )
+                    Text(
+                        text = repoDetailsResponse.subscribers_count.toString(),
+                        color = colorResource(id = R.color.body)
+                    )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
                 // Owner and Repo names
                 Text(
-                    text = "Owner: ${details.owner.login ?: "Unknown"}",
+                    text = "Owner: ${repoDetailsResponse.owner.login ?: "Unknown"}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text_title)
@@ -153,7 +217,7 @@ fun DetailsScreen(
                         .padding(vertical = 8.dp)
                 )
                 Text(
-                    text = "Repository: ${details.name ?: "Unknown"}",
+                    text = "Repository: ${repoDetailsResponse.name ?: "Unknown"}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text_title)
@@ -164,7 +228,6 @@ fun DetailsScreen(
                 )
 
                 // Button to navigate to the issues screen
-                // Inside DetailsScreen composable
                 Button(
                     onClick = {
                         navController.navigate("${Route.IssuesScreen.route}/${repoDetailsResponse.owner.login}/${repoDetailsResponse.name}")
@@ -293,9 +356,6 @@ fun DetailsScreenPreview() {
             watchers_count = 123,
             web_commit_signoff_required = false
         )
-
-
-
 
 
     }

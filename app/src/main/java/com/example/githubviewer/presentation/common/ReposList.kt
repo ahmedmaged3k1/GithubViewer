@@ -49,13 +49,13 @@ fun handlePagingResult(
 
     ) : Boolean {
     val loadState = repos.loadState
-    val error = when{
-        loadState.refresh is LoadState.Error->  loadState.refresh as LoadState.Error
-        loadState.prepend is LoadState.Error->  loadState.prepend as LoadState.Error
-        loadState.append is LoadState.Error->  loadState.append as LoadState.Error
+    val error = when {
+        loadState.refresh is LoadState.Error -> (loadState.refresh as LoadState.Error).error
+        loadState.prepend is LoadState.Error -> (loadState.prepend as LoadState.Error).error
+        loadState.append is LoadState.Error -> (loadState.append as LoadState.Error).error
         else -> null
-
     }
+
     return when {
         loadState.refresh is  LoadState.Loading ->{
             ShimmerEffect()

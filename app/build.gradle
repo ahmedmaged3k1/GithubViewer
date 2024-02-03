@@ -108,7 +108,13 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:2.5.2"
 
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+    testImplementation 'org.mockito:mockito-android:3.12.4' // Include this for Android projects
+    testImplementation 'junit:junit:4.13.2' // Include JUnit
 
+    testImplementation 'androidx.arch.core:core-testing:2.1.0' // For testing LiveData
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2' // For testing Coroutines
+    testImplementation "io.mockk:mockk:1.12.0"
 
 
 }
