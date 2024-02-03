@@ -29,6 +29,7 @@ fun reposList(
 
     val handlePagingResult = handlePagingResult(repos)
     Log.d("TAG", "reposList:  Handle $handlePagingResult")
+    Log.d("TAG", "reposList details: ${repos.itemSnapshotList.items.toString()} ")
     if (handlePagingResult) {
         Log.d("TAG", "reposList:  Right")
 

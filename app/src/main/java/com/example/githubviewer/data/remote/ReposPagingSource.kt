@@ -1,5 +1,6 @@
 package com.example.githubviewer.data.remote
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.githubviewer.data.local.RepoDao
@@ -13,7 +14,7 @@ class ReposPagingSource(private val reposApi: ReposApi,
         return try {
             val page = params.key ?: 1 // Default to the first page if key is null
             val reposList = reposApi.getRepos(page)
-
+            Log.d("TAG", "entered page ${reposList.toString()}")
             LoadResult.Page(
                 data = reposList,
                 prevKey = if (page == 1) null else page - 1,

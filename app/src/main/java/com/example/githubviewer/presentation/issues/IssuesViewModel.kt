@@ -9,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-
 class IssuesViewModel @Inject constructor(private val reposUseCases: ReposUseCases): ViewModel(){
     var loadedRepoIssues: RepoIssuesResponse = RepoIssuesResponse() // Provide a default object
 
@@ -33,6 +32,8 @@ class IssuesViewModel @Inject constructor(private val reposUseCases: ReposUseCas
 
         return loadedRepoIssues
     }
+
+
 
 
 }

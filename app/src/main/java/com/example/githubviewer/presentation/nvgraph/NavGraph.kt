@@ -42,6 +42,8 @@ fun NavGraph(
                     val viewModel: HomeViewModel = hiltViewModel()
                     val repos = viewModel.repos.collectAsLazyPagingItems()
                     Log.d("TAG", "NavGraph:  ${repos.itemCount}")
+                    Log.d("TAG", "reposList details: Nav ${repos.itemSnapshotList.items.toString()} ")
+
                     HomeScreen(repos = repos) { owner, repoName ->
                         navController.navigate("${Route.DetailsScreen.route}/$owner/$repoName")
                     }

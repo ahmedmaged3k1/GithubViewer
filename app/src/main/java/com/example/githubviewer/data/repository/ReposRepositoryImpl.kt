@@ -20,6 +20,7 @@ class ReposRepositoryImpl(private val reposApi: ReposApi,
     val _allDetailedRepos = MutableStateFlow<List<RepoDetailsResponse>>(emptyList())
 
     override fun getRepos(): Flow<PagingData<RepoDetailsResponse>> {
+        Log.d("TAG", "getRepos: paging ")
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {

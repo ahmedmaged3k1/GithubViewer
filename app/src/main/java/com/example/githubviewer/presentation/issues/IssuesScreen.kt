@@ -154,7 +154,7 @@ fun IssueDetails(
 
                 // Comments count
                 Text(
-                    text = "Comments: ${issue?.comments}"?:"No Comments",
+                    text = "State : ${issue?.state}"?:"Closed",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.body)

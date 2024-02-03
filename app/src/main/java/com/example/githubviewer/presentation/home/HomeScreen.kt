@@ -34,7 +34,6 @@ import com.example.githubviewer.presentation.common.reposList
 import com.example.githubviewer.util.Dimens
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(repos: LazyPagingItems<RepoDetailsResponse>,
                navigate:  (owner: String, repoName: String) -> Unit
