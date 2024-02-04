@@ -1,7 +1,6 @@
 package com.example.githubviewer.presentation.details
 
 
-import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,15 +20,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -37,15 +32,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.githubviewer.R
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
-import com.example.githubviewer.domain.model.License
-import com.example.githubviewer.domain.model.Owner
 import com.example.githubviewer.presentation.common.EmptyScreen
-import com.example.githubviewer.presentation.common.NetworkUtils
-import com.example.githubviewer.presentation.common.handlePagingResult
 import com.example.githubviewer.presentation.details.components.DetailsTopBar
-import com.example.githubviewer.presentation.issues.ShimmerEffectPlaceholder
 import com.example.githubviewer.presentation.nvgraph.Route
-import com.example.githubviewer.ui.theme.GithubViewerTheme
 
 
 @Composable
@@ -55,7 +44,7 @@ fun DetailsScreen(
     repos: LazyPagingItems<RepoDetailsResponse>
 
 ) {
-    if (handleDetailsResult(repos = repos)){
+    if (handleDetailsResult(repos = repos)) {
         // Display repository details
         Column(
             modifier = Modifier
@@ -63,8 +52,6 @@ fun DetailsScreen(
                 .background(color = colorResource(id = R.color.input_background))
         ) {
             DetailsTopBar(
-                navController = navController,
-                onShareClick = { /*TODO*/ },
                 onBackClick = {
                     navController.popBackStack(Route.HomeScreen.route, inclusive = false)
                 }
@@ -74,7 +61,6 @@ fun DetailsScreen(
                 modifier = Modifier
                     .padding(16.dp)
             ) {
-                // GitHub Icon
                 val githubIcon = painterResource(id = R.drawable.github_icon)
                 Image(
                     painter = githubIcon,
@@ -86,7 +72,7 @@ fun DetailsScreen(
                 )
 
                 Text(
-                    text = repoDetailsResponse?.name?:"No name available",
+                    text = repoDetailsResponse?.name ?: "No name available",
                     style = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -107,8 +93,6 @@ fun DetailsScreen(
                         .padding(bottom = 16.dp)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-
-                // Stars count with star icon
                 val starIcon = painterResource(id = R.drawable.baseline_star_24)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -120,13 +104,11 @@ fun DetailsScreen(
                         tint = colorResource(id = R.color.text_title)
                     )
                     Text(
-                        text = repoDetailsResponse?.stargazers_count.toString()?:"0",
+                        text = repoDetailsResponse?.stargazers_count.toString(),
                         color = colorResource(id = R.color.body)
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-
-                // Watchers count with eye icon
                 val watchersIcon = painterResource(id = R.drawable.baseline_remove_red_eye_24)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -138,14 +120,12 @@ fun DetailsScreen(
                         tint = colorResource(id = R.color.text_title)
                     )
                     Text(
-                        text = repoDetailsResponse?.watchers_count.toString()?:"0",
+                        text = repoDetailsResponse?.watchers_count.toString(),
                         color = colorResource(id = R.color.body)
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-
-                // Subscribers count with bell icon
                 val subscribersIcon = painterResource(id = R.drawable.baseline_doorbell_24)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -162,8 +142,6 @@ fun DetailsScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-
-                // Owner and Repo names
                 Text(
                     text = "Owner: ${repoDetailsResponse?.owner?.login ?: "Unknown"}",
                     style = TextStyle(
@@ -184,8 +162,6 @@ fun DetailsScreen(
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 )
-
-                // Button to navigate to the issues screen
                 Button(
                     onClick = {
                         navController.navigate("${Route.IssuesScreen.route}/${repoDetailsResponse?.owner?.login}/${repoDetailsResponse?.name}")
@@ -199,15 +175,13 @@ fun DetailsScreen(
     }
 
 
-
-
-    }
+}
 
 @Composable
 fun handleDetailsResult(
-    repos : LazyPagingItems<RepoDetailsResponse>,
+    repos: LazyPagingItems<RepoDetailsResponse>,
 
-    ) : Boolean {
+    ): Boolean {
     val loadState = repos.loadState
     val error = when {
         loadState.refresh is LoadState.Error -> (loadState.refresh as LoadState.Error).error
@@ -217,15 +191,17 @@ fun handleDetailsResult(
     }
 
     return when {
-        loadState.refresh is  LoadState.Loading ->{
+        loadState.refresh is LoadState.Loading -> {
             ShimmerEffectDetailsPlaceholder()
             false
         }
-        error != null ->{
-            EmptyScreen ()
+
+        error != null -> {
+            EmptyScreen()
             false
         }
-        else->{
+
+        else -> {
             true
         }
 
@@ -234,12 +210,9 @@ fun handleDetailsResult(
 
 
 }
+
 @Composable
 fun ShimmerEffectDetailsPlaceholder() {
-    val gradientWidth = 200.dp
-
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -377,123 +350,3 @@ fun ShimmerEffectDetailsPlaceholder() {
     }
 }
 
-
-
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun DetailsScreenPreview() {
-    GithubViewerTheme {
-        val fakeRepoDetails = RepoDetailsResponse(
-            allow_forking = true,
-            archive_url = "https://api.github.com/repos/owner/repo/{archive_format}{/ref}",
-            archived = false,
-            assignees_url = "https://api.github.com/repos/owner/repo/assignees{/user}",
-            blobs_url = "https://api.github.com/repos/owner/repo/git/blobs{/sha}",
-            branches_url = "https://api.github.com/repos/owner/repo/branches{/branch}",
-            clone_url = "https://github.com/owner/repo.git",
-            collaborators_url = "https://api.github.com/repos/owner/repo/collaborators{/collaborator}",
-            comments_url = "https://api.github.com/repos/owner/repo/comments{/number}",
-            commits_url = "https://api.github.com/repos/owner/repo/commits{/sha}",
-            compare_url = "https://api.github.com/repos/owner/repo/compare/{base}...{head}",
-            contents_url = "https://api.github.com/repos/owner/repo/contents/{+path}",
-            contributors_url = "https://api.github.com/repos/owner/repo/contributors",
-            created_at = "2024-02-01T12:34:56Z",
-            default_branch = "main",
-            deployments_url = "https://api.github.com/repos/owner/repo/deployments",
-            description = "This is a fake repository description.",
-            disabled = false,
-            downloads_url = "https://api.github.com/repos/owner/repo/downloads",
-            events_url = "https://api.github.com/repos/owner/repo/events",
-            fork = false,
-            forks = 123,
-            forks_count = 123,
-            forks_url = "https://api.github.com/repos/owner/repo/forks",
-            full_name = "owner/repo",
-            git_commits_url = "https://api.github.com/repos/owner/repo/git/commits{/sha}",
-            git_refs_url = "https://api.github.com/repos/owner/repo/git/refs{/sha}",
-            git_tags_url = "https://api.github.com/repos/owner/repo/git/tags{/sha}",
-            git_url = "git://github.com/owner/repo.git",
-            has_discussions = false,
-            has_downloads = true,
-            has_issues = true,
-            has_pages = false,
-            has_projects = true,
-            has_wiki = true,
-            homepage = "https://github.com/owner/repo",
-            hooks_url = "https://api.github.com/repos/owner/repo/hooks",
-            html_url = "https://github.com/owner/repo",
-            id = 123456,
-            is_template = false,
-            issue_comment_url = "https://api.github.com/repos/owner/repo/issues/comments{/number}",
-            issue_events_url = "https://api.github.com/repos/owner/repo/issues/events{/number}",
-            issues_url = "https://api.github.com/repos/owner/repo/issues{/number}",
-            keys_url = "https://api.github.com/repos/owner/repo/keys{/key_id}",
-            labels_url = "https://api.github.com/repos/owner/repo/labels{/name}",
-            language = "Kotlin",
-            languages_url = "https://api.github.com/repos/owner/repo/languages",
-            license = License(
-                key = "mit",
-                name = "MIT License",
-                spdx_id = "MIT",
-                url = "https://api.github.com/licenses/mit",
-                node_id = "MDc6TGljZW5zZTEz"
-            ),
-            merges_url = "https://api.github.com/repos/owner/repo/merges",
-            milestones_url = "https://api.github.com/repos/owner/repo/milestones{/number}",
-            mirror_url = null,
-            name = "repo",
-            network_count = 123,
-            node_id = "MDEwOlJlcG9zaXRvcnkx",
-            notifications_url = "https://api.github.com/repos/owner/repo/notifications{?since,all,participating}",
-            open_issues = 12,
-            open_issues_count = 12,
-            owner = Owner(
-                login = "owner",
-                id = 789,
-                node_id = "MDQ6VXNlcjc4OQ==",
-                avatar_url = "https://avatars.githubusercontent.com/u/789?v=4",
-                gravatar_id = "",
-                url = "https://api.github.com/users/owner",
-                html_url = "https://github.com/owner",
-                followers_url = "https://api.github.com/users/owner/followers",
-                following_url = "https://api.github.com/users/owner/following{/other_user}",
-                gists_url = "https://api.github.com/users/owner/gists{/gist_id}",
-                starred_url = "https://api.github.com/users/owner/starred{/owner}{/repo}",
-                subscriptions_url = "https://api.github.com/users/owner/subscriptions",
-                organizations_url = "https://api.github.com/users/owner/orgs",
-                repos_url = "https://api.github.com/users/owner/repos",
-                events_url = "https://api.github.com/users/owner/events{/privacy}",
-                received_events_url = "https://api.github.com/users/owner/received_events",
-                type = "User",
-                site_admin = false
-            ),
-            private = false,
-            pulls_url = "https://api.github.com/repos/owner/repo/pulls{/number}",
-            pushed_at = "2024-01-30T16:44:13Z",
-            releases_url = "https://api.github.com/repos/owner/repo/releases{/id}",
-            size = 7890,
-            ssh_url = "git@github.com:owner/repo.git",
-            stargazers_count = 456,
-            stargazers_url = "https://api.github.com/repos/owner/repo/stargazers",
-            statuses_url = "https://api.github.com/repos/owner/repo/statuses/{sha}",
-            subscribers_count = 789,
-            subscribers_url = "https://api.github.com/repos/owner/repo/subscribers",
-            subscription_url = "https://api.github.com/repos/owner/repo/subscription",
-            svn_url = "https://github.com/owner/repo",
-            tags_url = "https://api.github.com/repos/owner/repo/tags",
-            teams_url = "https://api.github.com/repos/owner/repo/teams",
-            temp_clone_token = null,
-            topics = emptyList(),
-            trees_url = "https://api.github.com/repos/owner/repo/git/trees{/sha}",
-            updated_at = "2024-01-31T12:34:56Z",
-            url = "https://api.github.com/repos/owner/repo",
-            visibility = "public",
-            watchers = 123,
-            watchers_count = 123,
-            web_commit_signoff_required = false
-        )
-
-
-    }
-}

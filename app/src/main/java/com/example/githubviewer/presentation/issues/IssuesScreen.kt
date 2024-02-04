@@ -3,7 +3,6 @@ package com.example.githubviewer.presentation.issues
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,11 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -43,10 +39,7 @@ import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.data.remote.dto.RepoIssuesResponse
 import com.example.githubviewer.presentation.common.CoilImage
 import com.example.githubviewer.presentation.common.EmptyScreen
-import com.example.githubviewer.presentation.common.NetworkUtils
-import com.example.githubviewer.presentation.common.reposCardShimmerEffect
 import com.example.githubviewer.presentation.details.components.DetailsTopBar
-import com.example.githubviewer.util.Dimens
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -56,12 +49,10 @@ fun IssueDetails(
     navController: NavHostController = rememberNavController(),
     repos: LazyPagingItems<RepoDetailsResponse>
 
-    ) {
+) {
     val handlePagingResult = handleIssuesResult(repos)
 
-    if(handlePagingResult){
-        // In your composable
-
+    if (handlePagingResult) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,22 +60,17 @@ fun IssueDetails(
         ) {
 
             DetailsTopBar(
-                navController = navController,
-                onShareClick = { /*TODO*/ },
                 onBackClick = {
                     navController.popBackStack()
                 }
             )
-
-
-            // Display issue details
             Column(
                 modifier = Modifier
                     .padding(16.dp)
             ) {
                 // Title
                 Text(
-                    text = issue?.title?:"No Title Available",
+                    text = issue?.title ?: "No Title Available",
                     style = TextStyle(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
@@ -96,10 +82,8 @@ fun IssueDetails(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
 
-
-                // Issue Number
                 Text(
-                    text = "Issue #${issue?.number}"?:"0",
+                    text = "Issue #${issue?.number}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.body)
@@ -109,9 +93,6 @@ fun IssueDetails(
                         .padding(bottom = 8.dp)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-
-
-                // User Avatar and Login
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -119,7 +100,7 @@ fun IssueDetails(
                         .padding(bottom = 8.dp)
                 ) {
                     CoilImage(
-                        url = issue?.user?.avatar_url?:"No Pic Available",
+                        url = issue?.user?.avatar_url ?: "No Pic Available",
                         contentDescription = "User Picture",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -128,7 +109,7 @@ fun IssueDetails(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = issue?.user?.login?:"No UserName Available",
+                        text = issue?.user?.login ?: "No UserName Available",
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
@@ -138,10 +119,8 @@ fun IssueDetails(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // Body
-
                 Text(
-                    text = issue?.body?:"No Body Available",
+                    text = issue?.body ?: "No Body Available",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.body)
@@ -152,9 +131,8 @@ fun IssueDetails(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // Comments count
                 Text(
-                    text = "State : ${issue?.state}"?:"Closed",
+                    text = "State : ${issue?.state}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.body)
@@ -177,29 +155,38 @@ fun IssueDetails(
                         .padding(bottom = 8.dp)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-
-                // Reactions
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 8.dp)
                 ) {
-                    ReactionRow("Eyes", R.drawable.baseline_remove_red_eye_24, issue?.reactions?.eyes?:0)
-                    ReactionRow("Heart", R.drawable.baseline_favorite_24, issue?.reactions?.heart?:0)
+                    ReactionRow(
+                        "Eyes",
+                        R.drawable.baseline_remove_red_eye_24,
+                        issue?.reactions?.eyes ?: 0
+                    )
+                    ReactionRow(
+                        "Heart",
+                        R.drawable.baseline_favorite_24,
+                        issue?.reactions?.heart ?: 0
+                    )
                     ReactionRow(
                         "Rocket",
                         R.drawable.baseline_rocket_launch_24,
-                        issue?.reactions?.rocket?:0
+                        issue?.reactions?.rocket ?: 0
                     )
-                    ReactionRow("Laugh", R.drawable.baseline_tag_faces_24, issue?.reactions?.laugh?:0)
+                    ReactionRow(
+                        "Laugh",
+                        R.drawable.baseline_tag_faces_24,
+                        issue?.reactions?.laugh ?: 0
+                    )
                 }
             }
         }
 
     }
 
-    }
-
+}
 
 
 @Composable
@@ -219,11 +206,12 @@ fun ReactionRow(label: String, iconResourceId: Int, count: Int) {
     Spacer(modifier = Modifier.height(10.dp))
 
 }
+
 @Composable
 fun handleIssuesResult(
-    repos : LazyPagingItems<RepoDetailsResponse>,
+    repos: LazyPagingItems<RepoDetailsResponse>,
 
-    ) : Boolean {
+    ): Boolean {
     val loadState = repos.loadState
     val error = when {
         loadState.refresh is LoadState.Error -> (loadState.refresh as LoadState.Error).error
@@ -233,15 +221,17 @@ fun handleIssuesResult(
     }
 
     return when {
-        loadState.refresh is  LoadState.Loading ->{
+        loadState.refresh is LoadState.Loading -> {
             ShimmerEffectPlaceholder()
             false
         }
-        error != null ->{
-            EmptyScreen ()
+
+        error != null -> {
+            EmptyScreen()
             false
         }
-        else->{
+
+        else -> {
             true
         }
 
@@ -250,55 +240,9 @@ fun handleIssuesResult(
 
 
 }
-@Composable
-private fun ShimmerEffect() {
-    val gradientWidth = 200.dp
-    val gradientHeight = 20.dp
 
-    // Create a gradient brush with repeating linear gradient
-    val shimmerBrush = Brush.horizontalGradient(
-        colors = listOf(
-            Color.Gray.copy(alpha = 0.2f),
-            Color.Gray.copy(alpha = 0.8f),
-            Color.Gray.copy(alpha = 0.2f)
-        ),
-        startX = 0f,
-        endX = gradientWidth.value,
-        tileMode = TileMode.Repeated
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(brush = shimmerBrush)
-            .animateContentSize()
-    ) {
-        // Content inside the shimmering Box
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
-            // You can add your UI elements here
-            Text(
-                text = "Loading...",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Gray
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-    }
-}
 @Composable
 fun ShimmerEffectPlaceholder() {
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -312,7 +256,6 @@ fun ShimmerEffectPlaceholder() {
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            // Title placeholder
             Spacer(
                 modifier = Modifier
                     .height(20.dp)
@@ -321,8 +264,6 @@ fun ShimmerEffectPlaceholder() {
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            // Issue Number placeholder
             Spacer(
                 modifier = Modifier
                     .height(16.dp)
@@ -331,8 +272,6 @@ fun ShimmerEffectPlaceholder() {
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            // User Avatar and Login placeholder
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -355,8 +294,6 @@ fun ShimmerEffectPlaceholder() {
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-
-            // Body placeholder
             Spacer(
                 modifier = Modifier
                     .height(100.dp)
@@ -365,8 +302,6 @@ fun ShimmerEffectPlaceholder() {
             )
 
             Spacer(modifier = Modifier.height(10.dp))
-
-            // Comments count placeholder
             Spacer(
                 modifier = Modifier
                     .height(16.dp)
@@ -376,7 +311,6 @@ fun ShimmerEffectPlaceholder() {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Created At placeholder
             Spacer(
                 modifier = Modifier
                     .height(16.dp)
@@ -386,7 +320,6 @@ fun ShimmerEffectPlaceholder() {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Reactions placeholder
             repeat(4) {
                 ReactionRowPlaceholder()
             }

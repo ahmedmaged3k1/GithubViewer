@@ -8,7 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.*
 import org.junit.jupiter.api.Assertions.*
@@ -45,7 +45,7 @@ class IssuesViewModelTest {
 
 
     @Test
-    fun test_GetRepoIssues_EmptyList() = runBlockingTest {
+    fun test_GetRepoIssues_EmptyList() = runTest {
         val owner = "exampleOwner"
         val repoName = "exampleRepo"
         val result = issuesViewModel.getRepoIssues(owner, repoName)
@@ -54,7 +54,7 @@ class IssuesViewModelTest {
     }
 
     @Test
-    fun test_GetRepoIssues_Error() = runBlockingTest {
+    fun test_GetRepoIssues_Error() = runTest {
         val owner = "exampleOwner"
         val repoName = "exampleRepo"
         val result = issuesViewModel.getRepoIssues(owner, repoName)

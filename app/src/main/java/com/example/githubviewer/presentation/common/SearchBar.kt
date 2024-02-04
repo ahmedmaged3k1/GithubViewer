@@ -1,6 +1,5 @@
 package com.example.githubviewer.presentation.common
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -25,10 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.githubviewer.R
-import com.example.githubviewer.ui.theme.GithubViewerTheme
 import com.example.githubviewer.util.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -107,17 +104,6 @@ fun Modifier.searchBar(): Modifier = composed {
         )
     } else {
         this
-    }
-}
-
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun SearchBarPreview() {
-    GithubViewerTheme {
-        SearchBar(text = "", onValueChange = {}, readOnly = false) {
-
-        }
     }
 }
 

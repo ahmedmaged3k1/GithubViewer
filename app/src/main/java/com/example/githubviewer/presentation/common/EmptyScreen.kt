@@ -1,6 +1,5 @@
 package com.example.githubviewer.presentation.common
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -15,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import com.example.githubviewer.R
@@ -39,10 +38,10 @@ fun EmptyScreen(error: LoadState.Error? = null) {
     }
 
     var icon by remember {
-        mutableStateOf(R.drawable.ic_network_error)
+        mutableIntStateOf(R.drawable.ic_network_error)
     }
 
-    if (error == null){
+    if (error == null) {
         message = "Internet Connection Error"
         icon = R.drawable.ic_network_error
     }
@@ -105,11 +104,4 @@ fun parseErrorMessage(error: LoadState.Error?): String {
             "Unknown Error."
         }
     }
-}
-
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun EmptyScreenPreview() {
-    EmptyContent(alphaAnim = 0.3f, message = "Internet Unavailable.",R.drawable.ic_network_error)
 }

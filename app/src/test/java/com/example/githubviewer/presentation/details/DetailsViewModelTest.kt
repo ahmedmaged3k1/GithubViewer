@@ -9,6 +9,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.*
 import org.junit.runner.RunWith
@@ -45,18 +46,12 @@ class DetailsViewModelTest {
 
 
     @Test
-    fun test_GetRepoDetails_Error() = runBlockingTest {
-        // Given
+    fun test_GetRepoDetails_Error() = runTest {
         val owner = "exampleOwner"
         val repoName = "exampleRepo"
-
-        // When
         val sut = DetailsViewModel(repoUseCases)
         val result = sut.getRepoDetails(owner, repoName)
         delay(1000)
-
-        // Then
-        // Ensure that the loadedRepoDetails is a default or empty RepoDetailsResponse
         Assert.assertEquals(result.owner.login, "No login available")
         Assert.assertEquals(result.owner, Owner())
 
@@ -64,13 +59,12 @@ class DetailsViewModelTest {
 
 
     @Test
-    fun test_Empty_RepoDetails() = runBlockingTest {
+    fun test_Empty_RepoDetails() = runTest {
         val sut = DetailsViewModel(repoUseCases)
         sut.getRepoDetails("", "")
         delay(1000)
         Assert.assertEquals(sut.loadedRepoDetails, RepoDetailsResponse())
     }
-
 
 
 }

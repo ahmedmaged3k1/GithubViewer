@@ -1,8 +1,5 @@
 package com.example.githubviewer.domain.model
 
-import androidx.room.Dao
-import androidx.room.Entity
-
 data class License(
     val key: String = "No key available",
     val name: String = "No name available",

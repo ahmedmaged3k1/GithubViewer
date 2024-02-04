@@ -4,8 +4,8 @@ import com.example.githubviewer.domain.manager.LocalUserManager
 import kotlinx.coroutines.flow.Flow
 
 
-class ReadAppEntry (private val localUserManager : LocalUserManager) {
-    suspend operator fun invoke() : Flow<Boolean> {
-       return  localUserManager.readAppEntry()
+class ReadAppEntry(private val localUserManager: LocalUserManager) {
+    operator fun invoke(): Flow<Boolean> {
+        return localUserManager.readAppEntry()
     }
 }

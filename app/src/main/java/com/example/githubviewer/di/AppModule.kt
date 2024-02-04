@@ -16,6 +16,7 @@ import com.example.githubviewer.domain.usecases.app_entry.SaveAppEntry
 import com.example.githubviewer.domain.usecases.repos.GetRepoDetails
 import com.example.githubviewer.domain.usecases.repos.GetRepoIssues
 import com.example.githubviewer.domain.usecases.repos.GetRepos
+import com.example.githubviewer.domain.usecases.repos.GetReposList
 import com.example.githubviewer.domain.usecases.repos.ReposUseCases
 import com.example.githubviewer.util.Constants.BASE_URL
 import dagger.Module
@@ -61,7 +62,8 @@ object AppModule {
         return ReposUseCases(
             getRepos = GetRepos(reposRepository),
             getReposDetails = GetRepoDetails(reposRepository),
-            getReposIssues = GetRepoIssues(reposRepository)
+            getReposIssues = GetRepoIssues(reposRepository),
+            getReposList = GetReposList(reposRepository)
         )
     }
     @Provides
@@ -72,7 +74,7 @@ object AppModule {
         return Room.databaseBuilder(
             context = application,
             klass = ReposDatabase::class.java,
-            name = "news_db"
+            name = "repos_db"
         ).addTypeConverter(RepoTypeConverter())
             .fallbackToDestructiveMigration()
             .build()

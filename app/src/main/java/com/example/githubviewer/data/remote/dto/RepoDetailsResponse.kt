@@ -1,6 +1,5 @@
 package com.example.githubviewer.data.remote.dto
 
-import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.githubviewer.domain.model.License
 import com.example.githubviewer.domain.model.Owner
@@ -71,7 +70,8 @@ data class RepoDetailsResponse(
     val notifications_url: String = "No notifications URL available",
     val open_issues: Int = -1,
     val open_issues_count: Int = -1,
-    val owner: Owner = Owner("No avatar URL available",
+    val owner: Owner = Owner(
+        "No avatar URL available",
         "No events URL available",
         "No followers URL available",
         "No following URL available",
@@ -89,7 +89,7 @@ data class RepoDetailsResponse(
         "No subscriptions URL available",
         "No type available",
         "No URL available"
-        ),  // Assuming Owner has its own default values
+    ),  // Assuming Owner has its own default values
     var private: Boolean = false,
     val pulls_url: String = "No pulls URL available",
     val pushed_at: String = "No push date available",

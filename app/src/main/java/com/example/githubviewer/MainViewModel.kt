@@ -17,12 +17,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val appEntryUseCases: AppEntryUseCases) :
     ViewModel() {
-    private val _splashCondition = mutableStateOf(true)
     var splashCondition by mutableStateOf(true)
         private set
 
-    var startDestination by mutableStateOf(Route.AppStartNavigation.route)
-        private set
+    private var startDestination by mutableStateOf(Route.AppStartNavigation.route)
 
     init {
         runBlocking {

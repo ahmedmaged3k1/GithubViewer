@@ -10,5 +10,6 @@ interface ReposRepository {
     fun getRepos(): Flow<PagingData<RepoDetailsResponse>>
      suspend fun getRepoDetails(owner: String, repo: String): RepoDetailsResponse
     suspend fun getRepoIssues(owner: String, repo: String): List<RepoIssuesResponse>
+    suspend fun getReposList(): List<RepoDetailsResponse>
 
 }

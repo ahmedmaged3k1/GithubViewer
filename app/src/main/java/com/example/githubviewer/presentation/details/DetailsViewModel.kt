@@ -10,8 +10,6 @@ import javax.inject.Inject
 class DetailsViewModel @Inject constructor(private val reposUseCases: ReposUseCases) : ViewModel() {
 
     var loadedRepoDetails: RepoDetailsResponse = RepoDetailsResponse()
-
-
         suspend fun getRepoDetails(owner: String?, repo: String?): RepoDetailsResponse {
             if (repo != null && owner != null) {
                 loadedRepoDetails = try {
