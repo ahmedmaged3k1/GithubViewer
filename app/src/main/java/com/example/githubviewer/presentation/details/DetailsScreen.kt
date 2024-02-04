@@ -1,6 +1,7 @@
 package com.example.githubviewer.presentation.details
 
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,6 +46,7 @@ fun DetailsScreen(
     repos: LazyPagingItems<RepoDetailsResponse>
 
 ) {
+    Log.d("TAG", "DetailsScreen: ${repoDetailsResponse.ownerName} owner , ${repoDetailsResponse.repoName}")
     if (handleDetailsResult(repos = repos)) {
         // Display repository details
         Column(
@@ -73,7 +75,7 @@ fun DetailsScreen(
                 )
 
                 Text(
-                    text = repoDetailsResponse.name ,
+                    text = repoDetailsResponse.name ?:"No name Available" ,
                     style = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -84,7 +86,7 @@ fun DetailsScreen(
                         .padding(bottom = 8.dp)
                 )
                 Text(
-                    text = repoDetailsResponse.description ,
+                    text = repoDetailsResponse.description ?:"No Description Available",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.body)
@@ -165,7 +167,7 @@ fun DetailsScreen(
                 )
                 Button(
                     onClick = {
-                        navController.navigate("${Route.IssuesScreen.route}/${repoDetailsResponse.ownerName}/${repoDetailsResponse.name}")
+                        navController.navigate("${Route.IssuesScreen.route}/${repoDetailsResponse.ownerName}/${repoDetailsResponse.repoName}")
                     },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {

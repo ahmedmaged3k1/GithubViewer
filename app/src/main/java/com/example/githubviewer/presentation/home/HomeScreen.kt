@@ -1,5 +1,7 @@
 package com.example.githubviewer.presentation.home
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
@@ -23,6 +26,7 @@ import com.example.githubviewer.util.Dimens
 fun HomeScreen(repos: LazyPagingItems<RepoDetailsResponse>,
                navigate:  (owner: String, repoName: String) -> Unit
 ) {
+    var context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,7 +47,10 @@ fun HomeScreen(repos: LazyPagingItems<RepoDetailsResponse>,
             modifier = Modifier.padding(horizontal = Dimens.mediumPadding1),
             repos = repos,
             onClick = { repoDetails ->
-                navigate(repoDetails.owner.login, repoDetails.name)
+                if (repoDetails.owner?.login==null){
+                    Toast.makeText(context, "No Details Available", Toast.LENGTH_SHORT).show()
+                }
+                navigate(repoDetails.owner!!.login, repoDetails.name!!)
 
             }
         )

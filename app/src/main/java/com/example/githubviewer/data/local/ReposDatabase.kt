@@ -7,7 +7,7 @@ import com.example.githubviewer.data.local.dto.RepoIssuesLocal
 
 @Database(
     entities = [RepoDetailsLocal::class, RepoIssuesLocal::class],
-    version = 5,
+    version = 9,
     exportSchema = false
 )
 abstract class ReposDatabase : RoomDatabase() {

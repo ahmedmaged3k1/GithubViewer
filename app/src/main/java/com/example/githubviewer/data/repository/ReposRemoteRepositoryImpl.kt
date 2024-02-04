@@ -9,6 +9,7 @@ import com.example.githubviewer.data.local.dto.RepoIssuesLocal
 import com.example.githubviewer.data.remote.ReposApi
 import com.example.githubviewer.data.remote.ReposPagingSource
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
+import com.example.githubviewer.data.remote.dto.RepoIssuesResponse
 import com.example.githubviewer.domain.repository.ReposLocalRepository
 import com.example.githubviewer.domain.repository.ReposRemoteRepository
 import kotlinx.coroutines.flow.Flow
@@ -48,9 +49,9 @@ class ReposRemoteRepositoryImpl(
             reposLocalRepository.getRepoDetails(url)
         } else {
             localRepoDetails.description = repoDetails.description
-            localRepoDetails.name = repoDetails.owner.login
+            localRepoDetails.name = repoDetails.owner?.login
             localRepoDetails.repoName = repoDetails.name
-            localRepoDetails.ownerName = repoDetails.owner.login
+            localRepoDetails.ownerName = repoDetails.owner?.login
             localRepoDetails.starsCount = repoDetails.stargazers_count
             localRepoDetails.subscribersCount = repoDetails.subscribers_count
             localRepoDetails.url = repoDetails.url
@@ -61,13 +62,14 @@ class ReposRemoteRepositoryImpl(
     }
 
     override suspend fun getRepoIssues(owner: String, repo: String): RepoIssuesLocal {
-        val userName = reposApi.getRepoIssues(owner, repo)[0].user.login
+
         val repoIssues = reposApi.getRepoIssues(owner, repo)
+        Log.d("TAG", "getRepoIssues: ${reposApi.getRepoIssues(owner, repo).toString()} ")
 
         val localRepoIssuesLocal = RepoIssuesLocal()
 
-        if (reposLocalRepository.hasRepoIssues(userName)) {
-            return reposLocalRepository.getRepoIssues(userName)
+        if (reposLocalRepository.hasRepoIssues(reposApi.getRepoIssues(owner,repo)[0].user.login)) {
+            return reposLocalRepository.getRepoIssues(reposApi.getRepoIssues(owner,repo)[0].user.login)
 
         } else {
             localRepoIssuesLocal.issueNumber = repoIssues[0].number

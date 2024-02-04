@@ -56,7 +56,7 @@ fun RepoCard(
                 .fillMaxWidth()
         ) {
             Text(
-                text = repo.name,
+                text = repo.name?:"No name available",
                 style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                 color = colorResource(id = R.color.body),
                 maxLines = 1,
@@ -67,7 +67,7 @@ fun RepoCard(
 
 
             Text(
-                text = repo.description,
+                text = repo.description?:"No Description Available",
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.text_title),
                 maxLines = 3,
