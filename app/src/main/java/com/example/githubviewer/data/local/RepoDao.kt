@@ -1,31 +1,32 @@
 package com.example.githubviewer.data.local
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.TypeConverters
-import com.example.githubviewer.domain.model.ReposResponse
-import kotlinx.coroutines.flow.Flow
+import com.example.githubviewer.data.local.dto.RepoDetailsLocal
+import com.example.githubviewer.data.local.dto.RepoIssuesLocal
 
 @Dao
 interface RepoDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsert(repo: ReposResponse)
-
-    @Delete
-    suspend fun delete(repo: ReposResponse)
-
-    @Query("SELECT * FROM ReposResponse")
-    @TypeConverters(RepoTypeConverter::class)
-    fun getRepos(): Flow<List<ReposResponse>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    @TypeConverters(RepoTypeConverter::class)
-    suspend fun insertRepos(repos: List<ReposResponse>)
+    suspend fun insertRepoDetails(repoDetails: RepoDetailsLocal)
 
 
-    @Query("DELETE FROM ReposResponse")
-    suspend fun clearRepos()
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRepoIssues(repoIssues: RepoIssuesLocal)
+
+    @Query("SELECT * FROM repo_issues WHERE userName = :userName")
+
+    suspend fun getRepoIssues(userName: String): RepoIssuesLocal
+
+    @Query("SELECT * FROM repo_details WHERE url = :url AND url IS NOT NULL AND url != 'No URL available' LIMIT 1")
+    suspend fun getRepoDetails(url: String): RepoDetailsLocal
+
+    @Query("SELECT EXISTS (SELECT 1 FROM repo_issues WHERE userName = :userName LIMIT 1)")
+    suspend fun hasRepoIssues(userName: String): Boolean
+
+    @Query("SELECT EXISTS (SELECT 1 FROM repo_details WHERE url = :url LIMIT 1)")
+    suspend fun hasRepoDetails(url: String): Boolean
 }

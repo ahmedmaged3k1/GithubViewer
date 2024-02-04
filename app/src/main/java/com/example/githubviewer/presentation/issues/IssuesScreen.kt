@@ -1,7 +1,5 @@
 package com.example.githubviewer.presentation.issues
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,17 +33,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.githubviewer.R
+import com.example.githubviewer.data.local.dto.RepoIssuesLocal
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
-import com.example.githubviewer.data.remote.dto.RepoIssuesResponse
 import com.example.githubviewer.presentation.common.CoilImage
 import com.example.githubviewer.presentation.common.EmptyScreen
 import com.example.githubviewer.presentation.details.components.DetailsTopBar
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun IssueDetails(
-    issue: RepoIssuesResponse?,
+    issue: RepoIssuesLocal?,
     navController: NavHostController = rememberNavController(),
     repos: LazyPagingItems<RepoDetailsResponse>
 
@@ -83,7 +80,7 @@ fun IssueDetails(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "Issue #${issue?.number}",
+                    text = "Issue #${issue?.issueNumber}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.body)
@@ -100,7 +97,7 @@ fun IssueDetails(
                         .padding(bottom = 8.dp)
                 ) {
                     CoilImage(
-                        url = issue?.user?.avatar_url ?: "No Pic Available",
+                        url = issue?.url ?: "No Pic Available",
                         contentDescription = "User Picture",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -109,7 +106,7 @@ fun IssueDetails(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = issue?.user?.login ?: "No UserName Available",
+                        text = issue?.userName ?: "No UserName Available",
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
@@ -145,7 +142,7 @@ fun IssueDetails(
 
                 // Created At
                 Text(
-                    text = "Created At: ${issue?.created_at}",
+                    text = "Created At: ${issue?.date}",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text_title)
@@ -163,22 +160,22 @@ fun IssueDetails(
                     ReactionRow(
                         "Eyes",
                         R.drawable.baseline_remove_red_eye_24,
-                        issue?.reactions?.eyes ?: 0
+                        issue?.eyes ?: 0
                     )
                     ReactionRow(
                         "Heart",
                         R.drawable.baseline_favorite_24,
-                        issue?.reactions?.heart ?: 0
+                        issue?.heart ?: 0
                     )
                     ReactionRow(
                         "Rocket",
                         R.drawable.baseline_rocket_launch_24,
-                        issue?.reactions?.rocket ?: 0
+                        issue?.rocket ?: 0
                     )
                     ReactionRow(
                         "Laugh",
                         R.drawable.baseline_tag_faces_24,
-                        issue?.reactions?.laugh ?: 0
+                        issue?.laugh ?: 0
                     )
                 }
             }

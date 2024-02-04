@@ -1,6 +1,5 @@
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
-import com.example.githubviewer.domain.model.Owner
 import com.example.githubviewer.domain.usecases.repos.ReposUseCases
 import com.example.githubviewer.presentation.details.DetailsViewModel
 import kotlinx.coroutines.Dispatchers
@@ -8,7 +7,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.*
@@ -52,8 +50,7 @@ class DetailsViewModelTest {
         val sut = DetailsViewModel(repoUseCases)
         val result = sut.getRepoDetails(owner, repoName)
         delay(1000)
-        Assert.assertEquals(result.owner.login, "No login available")
-        Assert.assertEquals(result.owner, Owner())
+        Assert.assertEquals(result.ownerName, "No login available")
 
     }
 

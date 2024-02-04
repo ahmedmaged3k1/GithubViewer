@@ -66,7 +66,6 @@ fun RepoCard(
             Spacer(modifier = Modifier.height(extraSmallPadding))
 
 
-            // Description Text
             Text(
                 text = repo.description,
                 style = MaterialTheme.typography.bodyMedium,

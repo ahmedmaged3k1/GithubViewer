@@ -31,6 +31,7 @@ import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.githubviewer.R
+import com.example.githubviewer.data.local.dto.RepoDetailsLocal
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
 import com.example.githubviewer.presentation.common.EmptyScreen
 import com.example.githubviewer.presentation.details.components.DetailsTopBar
@@ -39,7 +40,7 @@ import com.example.githubviewer.presentation.nvgraph.Route
 
 @Composable
 fun DetailsScreen(
-    repoDetailsResponse: RepoDetailsResponse?,
+    repoDetailsResponse: RepoDetailsLocal,
     navController: NavHostController,
     repos: LazyPagingItems<RepoDetailsResponse>
 
@@ -72,7 +73,7 @@ fun DetailsScreen(
                 )
 
                 Text(
-                    text = repoDetailsResponse?.name ?: "No name available",
+                    text = repoDetailsResponse.name ,
                     style = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -83,7 +84,7 @@ fun DetailsScreen(
                         .padding(bottom = 8.dp)
                 )
                 Text(
-                    text = repoDetailsResponse?.description ?: "No description available",
+                    text = repoDetailsResponse.description ,
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.body)
@@ -104,7 +105,7 @@ fun DetailsScreen(
                         tint = colorResource(id = R.color.text_title)
                     )
                     Text(
-                        text = repoDetailsResponse?.stargazers_count.toString(),
+                        text = repoDetailsResponse.starsCount.toString(),
                         color = colorResource(id = R.color.body)
                     )
                 }
@@ -120,7 +121,7 @@ fun DetailsScreen(
                         tint = colorResource(id = R.color.text_title)
                     )
                     Text(
-                        text = repoDetailsResponse?.watchers_count.toString(),
+                        text = repoDetailsResponse.watchersCount.toString(),
                         color = colorResource(id = R.color.body)
                     )
                 }
@@ -137,13 +138,13 @@ fun DetailsScreen(
                         tint = colorResource(id = R.color.text_title)
                     )
                     Text(
-                        text = repoDetailsResponse?.subscribers_count.toString(),
+                        text = repoDetailsResponse.subscribersCount.toString(),
                         color = colorResource(id = R.color.body)
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "Owner: ${repoDetailsResponse?.owner?.login ?: "Unknown"}",
+                    text = "Owner: ${repoDetailsResponse.ownerName }",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text_title)
@@ -153,7 +154,7 @@ fun DetailsScreen(
                         .padding(vertical = 8.dp)
                 )
                 Text(
-                    text = "Repository: ${repoDetailsResponse?.name ?: "Unknown"}",
+                    text = "Repository: ${repoDetailsResponse.repoName }",
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text_title)
@@ -164,7 +165,7 @@ fun DetailsScreen(
                 )
                 Button(
                     onClick = {
-                        navController.navigate("${Route.IssuesScreen.route}/${repoDetailsResponse?.owner?.login}/${repoDetailsResponse?.name}")
+                        navController.navigate("${Route.IssuesScreen.route}/${repoDetailsResponse.ownerName}/${repoDetailsResponse.name}")
                     },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {

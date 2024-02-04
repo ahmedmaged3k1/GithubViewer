@@ -116,16 +116,3 @@ data class RepoDetailsResponse(
     var web_commit_signoff_required: Boolean = false
 )
 
-/*
-   constructor() : this(
-        false, "", false, "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "", false, "", "",
-        false, 0, 0, "", "", "", "", "", "", "",
-        false, false, false, false, false, false, "", "",
-        "", 0, false, "", "", "", "", "", "", "",
-        "", "", License("","","","",""), "", "", null, "", 0, "",
-        "", 0, 0, Owner("","","","","","","",0,"","","","","",true,"","","",""), false, "", "", "", 0, "", 0,
-        "", "", 0, "", "", "", "", "", "", null, listOf(),
-        "", "", "", "", 0, 0, false
-    )
- */

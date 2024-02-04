@@ -2,11 +2,14 @@ package com.example.githubviewer.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.example.githubviewer.domain.model.ReposResponse
+import com.example.githubviewer.data.local.dto.RepoDetailsLocal
+import com.example.githubviewer.data.local.dto.RepoIssuesLocal
 
-@Database(entities = [ReposResponse::class], version = 2)
-@TypeConverters(RepoTypeConverter::class)
+@Database(
+    entities = [RepoDetailsLocal::class, RepoIssuesLocal::class],
+    version = 5,
+    exportSchema = false
+)
 abstract class ReposDatabase : RoomDatabase() {
     abstract val repoDao: RepoDao
 }

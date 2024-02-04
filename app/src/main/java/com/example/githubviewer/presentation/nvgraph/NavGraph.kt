@@ -43,6 +43,7 @@ fun NavGraph(
                 } else {
                     EmptyScreen(null)
                 }
+
             }
             composable(route = Route.DetailsScreen.route + "/{owner}/{repoName}") { backStackEntry ->
                 if (NetworkUtils.isNetworkAvailable(context)) {
@@ -74,9 +75,11 @@ fun NavGraph(
                         viewModel.getRepoIssues(owner, repoName)
                     }
                     val viewModelHome: HomeViewModel = hiltViewModel()
+                    val reposViewModel: IssuesViewModel = hiltViewModel()
+
                     val repos = viewModelHome.repos.collectAsLazyPagingItems()
                     IssueDetails(
-                        issue = viewModel.loadedRepoIssues,
+                        issue = reposViewModel.loadedRepoIssues,
                         navController,
                         repos
                     )

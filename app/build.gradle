@@ -118,5 +118,11 @@ dependencies {
     testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
     testImplementation "org.robolectric:robolectric:4.7.1"
 
+// OkHttp logging interceptor
+    implementation "com.squareup.okhttp3:okhttp:4.9.1"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
+    testImplementation 'io.mockk:mockk:1.12.0'
+
+
 
 }
