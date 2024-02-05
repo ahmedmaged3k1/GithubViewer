@@ -20,89 +20,84 @@ class ReposRemoteRepositoryImpl(
 ) : ReposRemoteRepository {
 
     override fun getRepos(): Flow<PagingData<RepoDetailsResponse>> {
-        Log.d("TAG", "getReposList: imp ")
-
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
-                ReposPagingSource(
-                    reposApi = reposApi,
-                )
+                ReposPagingSource(reposApi)
             }
         ).flow
-
     }
 
     override suspend fun getReposList(): List<RepoDetailsResponse> {
         return reposApi.getRepos(1)
-
     }
 
     override suspend fun getRepoDetails(owner: String, repo: String): RepoDetailsLocal {
         try {
             val repoDetails = reposApi.getRepoDetails(owner, repo)
+
             if (repoDetails == RepoDetailsResponse()) return RepoDetailsLocal()
+
             val localRepoDetails = RepoDetailsLocal()
             val url = repoDetails.url
+
             if (url.isEmpty()) return RepoDetailsLocal()
+
             return if (reposLocalRepository.hasRepoDetails(url)) {
                 reposLocalRepository.getRepoDetails(url)
             } else {
-                localRepoDetails.description = repoDetails.description
-                localRepoDetails.name = repoDetails.owner?.login
-                localRepoDetails.repoName = repoDetails.name
-                localRepoDetails.ownerName = repoDetails.owner?.login
-                localRepoDetails.starsCount = repoDetails.stargazers_count
-                localRepoDetails.subscribersCount = repoDetails.subscribers_count
-                localRepoDetails.url = repoDetails.url
-                localRepoDetails.watchersCount = repoDetails.watchers_count
+                localRepoDetails.apply {
+                    description = repoDetails.description
+                    name = repoDetails.owner?.login
+                    repoName = repoDetails.name
+                    ownerName = repoDetails.owner?.login
+                    starsCount = repoDetails.stargazers_count
+                    subscribersCount = repoDetails.subscribers_count
+                    this.url = repoDetails.url
+                    watchersCount = repoDetails.watchers_count
+                }
+
                 reposLocalRepository.insertRepoDetails(localRepoDetails)
                 localRepoDetails
             }
-        }
-        catch (_:Exception){
+        } catch (_: Exception) {
             return RepoDetailsLocal()
-
         }
-
-
     }
 
     override suspend fun getRepoIssues(owner: String, repo: String): RepoIssuesLocal {
-
         try {
             val repoIssues = reposApi.getRepoIssues(owner, repo)
-
             val localRepoIssuesLocal = RepoIssuesLocal()
 
-            if (reposLocalRepository.hasRepoIssues(reposApi.getRepoIssues(owner,repo)[0].user.login)) {
-                return reposLocalRepository.getRepoIssues(reposApi.getRepoIssues(owner,repo)[0].user.login)
-
+            if (reposLocalRepository.hasRepoIssues(repoIssues.firstOrNull()?.user?.login ?: "")) {
+                return reposLocalRepository.getRepoIssues(repoIssues.firstOrNull()?.user?.login ?: "")
             } else {
-                localRepoIssuesLocal.issueNumber = repoIssues[0].number
-                localRepoIssuesLocal.laugh = repoIssues[0].reactions.laugh
-                localRepoIssuesLocal.heart = repoIssues[0].reactions.heart
-                localRepoIssuesLocal.rocket = repoIssues[0].reactions.rocket
-                localRepoIssuesLocal.state = repoIssues[0].state
-                localRepoIssuesLocal.body = repoIssues[0].body
-                localRepoIssuesLocal.userName = repoIssues[0].user.login
-                localRepoIssuesLocal.date = repoIssues[0].created_at
-                localRepoIssuesLocal.url = repoIssues[0].user.avatar_url
-                localRepoIssuesLocal.title = repoIssues[0].title
-                reposLocalRepository.insertRepoIssues(localRepoIssuesLocal)
+                val firstIssue = repoIssues.firstOrNull()
 
+                localRepoIssuesLocal.apply {
+                    issueNumber = firstIssue?.number ?: 0
+                    laugh = firstIssue?.reactions?.laugh ?: 0
+                    heart = firstIssue?.reactions?.heart ?: 0
+                    rocket = firstIssue?.reactions?.rocket ?: 0
+                    state = firstIssue?.state ?: ""
+                    body = firstIssue?.body ?: ""
+                    userName = firstIssue?.user?.login ?: ""
+                    date = firstIssue?.created_at ?: ""
+                    url = firstIssue?.user?.avatar_url ?: ""
+                    title = firstIssue?.title ?: ""
+                }
+
+                reposLocalRepository.insertRepoIssues(localRepoIssuesLocal)
                 return localRepoIssuesLocal
             }
-        }
-        catch (_:Exception){
+        } catch (_: Exception) {
             return RepoIssuesLocal()
-
         }
-
     }
-
 
     companion object {
         private const val PAGE_SIZE = 10
+
     }
 }
