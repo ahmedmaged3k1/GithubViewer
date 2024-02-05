@@ -13,9 +13,16 @@ class DetailsViewModel @Inject constructor(private val reposUseCases: ReposUseCa
 
     suspend fun getRepoDetails(owner: String?, repo: String?): RepoDetailsLocal {
         if (repo != null && owner != null) {
-            loadedRepoDetails =
-                reposUseCases.getReposDetails(owner, repo)
-            return loadedRepoDetails
+            try {
+                loadedRepoDetails =
+                    reposUseCases.getReposDetails?.let { it(owner, repo) }!!
+                return loadedRepoDetails
+            } catch (_: Exception) {
+                loadedRepoDetails = RepoDetailsLocal()
+                return RepoDetailsLocal()
+
+            }
+
         }
         loadedRepoDetails = RepoDetailsLocal()
         return RepoDetailsLocal()

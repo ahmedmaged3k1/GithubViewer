@@ -1,64 +1,57 @@
 package com.example.githubviewer.presentation.issues
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.githubviewer.data.remote.dto.RepoIssuesResponse
+import com.example.githubviewer.data.local.dto.RepoIssuesLocal
 import com.example.githubviewer.domain.usecases.repos.ReposUseCases
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.*
-import org.junit.jupiter.api.Assertions.*
-import org.junit.runner.RunWith
-import org.mockito.InjectMocks
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.mockito.Mock
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import org.robolectric.RobolectricTestRunner
 
 @ExperimentalCoroutinesApi
-@RunWith(RobolectricTestRunner::class)
 class IssuesViewModelTest {
 
     @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = StandardTestDispatcher()
+    val rule = InstantTaskExecutorRule()
 
     @Mock
-    lateinit var repoUseCases: ReposUseCases
+    private lateinit var reposUseCases: ReposUseCases
 
-    @InjectMocks
-    private lateinit var issuesViewModel: IssuesViewModel
+    private lateinit var viewModel: IssuesViewModel
 
     @Before
-    fun setUp() {
+    fun setup() {
         MockitoAnnotations.openMocks(this)
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
-
-    @Test
-    fun test_GetRepoIssues_EmptyList() = runTest {
-        val owner = "exampleOwner"
-        val repoName = "exampleRepo"
-        val result = issuesViewModel.getRepoIssues(owner, repoName)
-        delay(1000)
-        Assert.assertEquals(RepoIssuesResponse(), result)
+        viewModel = IssuesViewModel(reposUseCases)
     }
 
     @Test
-    fun test_GetRepoIssues_Error() = runTest {
-        val owner = "exampleOwner"
-        val repoName = "exampleRepo"
-        val result = issuesViewModel.getRepoIssues(owner, repoName)
-        delay(1000)
-        Assert.assertEquals(RepoIssuesResponse(), result)
-    }
+    fun `getRepoIssues should return default RepoIssuesLocal when owner or repo is null`() =
+        runTest {
+            val owner: String? = null
+            val repo: String? = null
+            val result = viewModel.getRepoIssues(owner, repo)
+            assertEquals(RepoIssuesLocal(), result)
+            assertEquals(RepoIssuesLocal(), viewModel.loadedRepoIssues)
+        }
+
+    @Test
+    fun `getRepoIssues should return default RepoIssuesLocal when ReposUseCases returns null`() =
+        runTest {
+            val owner = "owner"
+            val repo = "repo"
+            `when`(reposUseCases.getReposIssues?.let { it(owner, repo) }).thenReturn(
+                null
+            )
+            val result = viewModel.getRepoIssues(owner, repo)
+            assertEquals(RepoIssuesLocal(), result)
+            assertEquals(RepoIssuesLocal(), viewModel.loadedRepoIssues)
+        }
+
+
 }

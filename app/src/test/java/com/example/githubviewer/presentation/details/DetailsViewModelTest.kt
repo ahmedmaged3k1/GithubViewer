@@ -1,67 +1,55 @@
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
+import com.example.githubviewer.data.local.dto.RepoDetailsLocal
 import com.example.githubviewer.domain.usecases.repos.ReposUseCases
 import com.example.githubviewer.presentation.details.DetailsViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.*
-import org.junit.runner.RunWith
-import org.mockito.InjectMocks
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import org.robolectric.RobolectricTestRunner
 
 @ExperimentalCoroutinesApi
-@RunWith(RobolectricTestRunner::class)
-
 class DetailsViewModelTest {
 
     @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val testDispatcher = StandardTestDispatcher()
+    val rule = InstantTaskExecutorRule()
 
     @Mock
-    lateinit var repoUseCases: ReposUseCases
+    private lateinit var reposUseCases: ReposUseCases
 
-    @InjectMocks
-    private lateinit var detailsViewModel: DetailsViewModel
+    private lateinit var viewModel: DetailsViewModel
 
     @Before
-    fun setUp() {
+    fun setup() {
         MockitoAnnotations.openMocks(this)
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+        viewModel = DetailsViewModel(reposUseCases)
     }
 
 
     @Test
-    fun test_GetRepoDetails_Error() = runTest {
-        val owner = "exampleOwner"
-        val repoName = "exampleRepo"
-        val sut = DetailsViewModel(repoUseCases)
-        val result = sut.getRepoDetails(owner, repoName)
-        delay(1000)
-        Assert.assertEquals(result.ownerName, "No login available")
-
-    }
-
+    fun `getRepoDetails should return default RepoDetailsLocal when owner or repo is null`() =
+        runTest {
+            val owner: String? = null
+            val repo: String? = null
+            val result = viewModel.getRepoDetails(owner, repo)
+            assertEquals(RepoDetailsLocal(), result)
+            assertEquals(RepoDetailsLocal(), viewModel.loadedRepoDetails)
+        }
 
     @Test
-    fun test_Empty_RepoDetails() = runTest {
-        val sut = DetailsViewModel(repoUseCases)
-        sut.getRepoDetails("", "")
-        delay(1000)
-        Assert.assertEquals(sut.loadedRepoDetails, RepoDetailsResponse())
-    }
-
-
+    fun `getRepoDetails should return default RepoDetailsLocal when ReposUseCases returns null`() =
+        runTest {
+            val owner = "owner"
+            val repo = "repo"
+            `when`(reposUseCases.getReposDetails?.let { it(owner, repo) }).thenReturn(
+                null
+            )
+            val result = viewModel.getRepoDetails(owner, repo)
+            assertEquals(RepoDetailsLocal(), result)
+            assertEquals(RepoDetailsLocal(), viewModel.loadedRepoDetails)
+        }
 }

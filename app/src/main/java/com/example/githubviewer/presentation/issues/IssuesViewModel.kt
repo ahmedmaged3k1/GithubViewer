@@ -13,8 +13,14 @@ class IssuesViewModel @Inject constructor(private val reposUseCases: ReposUseCas
 
     suspend fun getRepoIssues(owner: String?, repo: String?): RepoIssuesLocal {
         if (repo != null && owner != null) {
-            loadedRepoIssues = reposUseCases.getReposIssues(owner, repo)
-            return loadedRepoIssues
+            return try {
+                loadedRepoIssues = reposUseCases.getReposIssues?.let { it(owner, repo) }!!
+                loadedRepoIssues
+            } catch (_: Exception) {
+                RepoIssuesLocal()
+
+            }
+
         }
         return RepoIssuesLocal()
 

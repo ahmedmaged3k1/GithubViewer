@@ -1,86 +1,70 @@
 package com.example.githubviewer.data.repository
 
-import com.example.githubviewer.data.local.RepoDao
-import com.example.githubviewer.data.local.dto.RepoDetailsLocal
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.githubviewer.data.local.dto.RepoIssuesLocal
 import com.example.githubviewer.data.remote.ReposApi
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
+import com.example.githubviewer.data.remote.dto.RepoIssuesResponse
 import com.example.githubviewer.domain.repository.ReposLocalRepository
+import com.example.githubviewer.domain.repository.ReposRemoteRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.any
-import org.mockito.Mockito.anyString
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
 @ExperimentalCoroutinesApi
 class ReposRemoteRepositoryImplTest {
 
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
     @Mock
     private lateinit var reposApi: ReposApi
 
     @Mock
-    private lateinit var repoDao: RepoDao
-
-    @Mock
     private lateinit var reposLocalRepository: ReposLocalRepository
 
-    private lateinit var reposRemoteRepository: ReposRemoteRepositoryImpl
+    private lateinit var repository: ReposRemoteRepository
 
     @Before
-    fun setUp() {
+    fun setup() {
         MockitoAnnotations.openMocks(this)
-        reposRemoteRepository = ReposRemoteRepositoryImpl(reposApi, reposLocalRepository)
+        repository = ReposRemoteRepositoryImpl(reposApi, reposLocalRepository)
     }
 
+
     @Test
-    fun `getRepoDetails should return local RepoDetails if available`() = runBlocking {
-        val fakeRepoDetailsResponse = RepoDetailsResponse()
-        `when`(
-            reposApi.getRepoDetails(
-                anyString(),
-                anyString()
-            )
-        ).thenReturn(fakeRepoDetailsResponse)
+    fun `getReposList should return List with expected RepoDetailsResponse`() = runTest {
+        val expectedRepoDetailsList: List<RepoDetailsResponse> = emptyList()
+        `when`(reposApi.getRepos(1)).thenReturn(expectedRepoDetailsList)
 
-        val fakeLocalRepoDetails = RepoDetailsLocal()
-        val url = ""
-        `when`(reposLocalRepository.hasRepoDetails(url)).thenReturn(true)
-        `when`(reposLocalRepository.getRepoDetails(url)).thenReturn(fakeLocalRepoDetails)
+        val actualRepoDetailsList = repository.getReposList()
 
-        val result = reposRemoteRepository.getRepoDetails("owner", "repo")
-
-        verify(reposApi, never()).getRepoDetails(anyString(), anyString())
-
-        verify(reposLocalRepository).hasRepoDetails(anyString())
-        verify(reposLocalRepository).getRepoDetails(anyString())
-
-        assertEquals(RepoDetailsResponse(), result)
+        assertEquals(expectedRepoDetailsList, actualRepoDetailsList)
     }
 
+
     @Test
-    fun `getRepoDetails should return new local RepoDetails if not available locally`() =
-        runBlocking {
-            val fakeRepoDetailsResponse = RepoDetailsResponse()
-            `when`(reposApi.getRepoDetails(anyString(), anyString())).thenReturn(
-                fakeRepoDetailsResponse
-            )
-            `when`(reposLocalRepository.hasRepoDetails(anyString())).thenReturn(false)
+    fun `getRepoIssues should return expected RepoIssuesLocal`() = runTest {
+        val owner = "owner"
+        val repo = "repo"
+        val expectedRepoIssuesLocal =
+            RepoIssuesLocal()
+        val repoIssuesResponse: List<RepoIssuesResponse> =
+            emptyList()
+        `when`(reposApi.getRepoIssues(owner, repo)).thenReturn(repoIssuesResponse)
+        `when`(reposLocalRepository.hasRepoIssues(expectedRepoIssuesLocal.userName)).thenReturn(true)
+        `when`(reposLocalRepository.getRepoIssues(expectedRepoIssuesLocal.userName)).thenReturn(
+            expectedRepoIssuesLocal
+        )
 
-            val result = reposRemoteRepository.getRepoDetails("owner", "repo")
+        val actualRepoIssuesLocal = repository.getRepoIssues(owner, repo)
 
-            verify(reposApi).getRepoDetails(anyString(), anyString())
-
-            verify(reposLocalRepository).hasRepoDetails(anyString())
-            verify(reposLocalRepository).insertRepoDetails(any())
-
-            assertEquals(fakeRepoDetailsResponse, result)
-        }
-
-
+        assertEquals(expectedRepoIssuesLocal, actualRepoIssuesLocal)
+    }
 }

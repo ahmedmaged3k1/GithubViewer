@@ -1,6 +1,5 @@
 package com.example.githubviewer.data.repository
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -9,7 +8,6 @@ import com.example.githubviewer.data.local.dto.RepoIssuesLocal
 import com.example.githubviewer.data.remote.ReposApi
 import com.example.githubviewer.data.remote.ReposPagingSource
 import com.example.githubviewer.data.remote.dto.RepoDetailsResponse
-import com.example.githubviewer.data.remote.dto.RepoIssuesResponse
 import com.example.githubviewer.domain.repository.ReposLocalRepository
 import com.example.githubviewer.domain.repository.ReposRemoteRepository
 import kotlinx.coroutines.flow.Flow
@@ -71,7 +69,9 @@ class ReposRemoteRepositoryImpl(
             val localRepoIssuesLocal = RepoIssuesLocal()
 
             if (reposLocalRepository.hasRepoIssues(repoIssues.firstOrNull()?.user?.login ?: "")) {
-                return reposLocalRepository.getRepoIssues(repoIssues.firstOrNull()?.user?.login ?: "")
+                return reposLocalRepository.getRepoIssues(
+                    repoIssues.firstOrNull()?.user?.login ?: ""
+                )
             } else {
                 val firstIssue = repoIssues.firstOrNull()
 
