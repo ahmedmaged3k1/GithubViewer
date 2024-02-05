@@ -40,7 +40,6 @@ class ReposRemoteRepositoryImplTest {
 
     @Test
     fun `getRepoDetails should return local RepoDetails if available`() = runBlocking {
-        // Mock the response from the API
         val fakeRepoDetailsResponse = RepoDetailsResponse()
         `when`(
             reposApi.getRepoDetails(
@@ -49,49 +48,37 @@ class ReposRemoteRepositoryImplTest {
             )
         ).thenReturn(fakeRepoDetailsResponse)
 
-        // Mock local repository to have the RepoDetails
         val fakeLocalRepoDetails = RepoDetailsLocal()
         val url = ""
         `when`(reposLocalRepository.hasRepoDetails(url)).thenReturn(true)
         `when`(reposLocalRepository.getRepoDetails(url)).thenReturn(fakeLocalRepoDetails)
 
-        // Call the method
         val result = reposRemoteRepository.getRepoDetails("owner", "repo")
 
-        // Verify that the API method was not called
         verify(reposApi, never()).getRepoDetails(anyString(), anyString())
 
-        // Verify that the local repository methods were called
         verify(reposLocalRepository).hasRepoDetails(anyString())
         verify(reposLocalRepository).getRepoDetails(anyString())
 
-        // Verify the result
         assertEquals(RepoDetailsResponse(), result)
     }
 
     @Test
     fun `getRepoDetails should return new local RepoDetails if not available locally`() =
         runBlocking {
-            // Mock the response from the API
             val fakeRepoDetailsResponse = RepoDetailsResponse()
             `when`(reposApi.getRepoDetails(anyString(), anyString())).thenReturn(
                 fakeRepoDetailsResponse
             )
-
-            // Mock local repository to not have the RepoDetails
             `when`(reposLocalRepository.hasRepoDetails(anyString())).thenReturn(false)
 
-            // Call the method
             val result = reposRemoteRepository.getRepoDetails("owner", "repo")
 
-            // Verify that the API method was called
             verify(reposApi).getRepoDetails(anyString(), anyString())
 
-            // Verify that the local repository methods were called
             verify(reposLocalRepository).hasRepoDetails(anyString())
             verify(reposLocalRepository).insertRepoDetails(any())
 
-            // Verify the result
             assertEquals(fakeRepoDetailsResponse, result)
         }
 
